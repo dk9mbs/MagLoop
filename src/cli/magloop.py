@@ -70,24 +70,35 @@ def waitForLine(port, text, timeout=0):
 
 
     while True:
-        ch = port.read(1)
-
-        # in case of timeout return a None value
-        if ch==b'' and timeout>0:
+        line=port.readline()
+        if line==None and timeout>0:
             timeoutCounter+=1
             print('timeout %s' % timeoutCounter, file=sys.stderr)
             if timeoutCounter>timeout:
                 return None
         else:
-            s +="".join(map(chr, ch))
-            if s==text:
-                found=True
+            if line.startswith(bytes(text,'utf-8')):
+                return line
 
-            if ch == b'\r' or ch == b'\n':
-                if found==True:
-                    return s
-                else:
-                    s=""
+
+        #ch = port.read(1)
+
+        # in case of timeout return a None value
+        #if ch==b'' and timeout>0:
+        #    timeoutCounter+=1
+        #    print('timeout %s' % timeoutCounter, file=sys.stderr)
+        #    if timeoutCounter>timeout:
+        #        return None
+        #else:
+        #    s +="".join(map(chr, ch))
+        #    if s==text:
+        #        found=True
+
+        #    if ch == b'\r' or ch == b'\n':
+        #        if found==True:
+        #            return s
+        #        else:
+        #            s=""
 
 
 initSerial(port)
