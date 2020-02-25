@@ -1,13 +1,12 @@
-# Serial1.py
-#stty -F /dev/ttyUSB0 -hupcl
-#https://playground.arduino.cc/Main/DisablingAutoResetOnSerialConnection/
+#!/usr/bin/python3.7
 
+from __future__ import print_function
 import serial
 import time
 import argparse
 import os
-
 import subprocess
+import sys
 
 
 parser = argparse.ArgumentParser(description='Get iq datastream form radio device')
@@ -24,53 +23,82 @@ parser.add_argument("-q", "--quiet",
 
 args=parser.parse_args()
 
-#port = "/dev/ttyUSB1"
-#baudrate = 9600
-#command="SP"
+port = "/dev/ttyUSB0"
+baudrate = 9600
+command="SP"
 
-port = args.device
-baudrate = args.baudrate
-command=args.command
+if args.device != None:
+    port = args.device
+
+if args.baudrate != None:
+    baudrate = args.baudrate
+
+if args.command != None:
+    command=args.command
+
+print('Port: %s' % port, file=sys.stderr)
+print('Baud: %s' % baudrate, file=sys.stderr)
+print('Command: %s' % command, file=sys.stderr)
 
 def initSerial(port):
+    #stty -F /dev/ttyUSB0 -hupcl
+    #https://playground.arduino.cc/Main/DisablingAutoResetOnSerialConnection/
     process=subprocess.Popen(['/bin/stty', '-F', port, '-hupcl'])
     process.wait()
 
-
-def readLine(port):
+def readLine(port, timeout=0):
     s = ""
+    timeoutCounter=0
     while True:
-        ch = port.read()
-        s += "".join(map(chr, ch))
-        if ch == b'\r':
-            return s
+        ch = port.read(1)
 
-def waitFor(port, text):
+        # in case of timeout return a None value
+        if ch==b'' and timeout>0:
+            timeoutCounter+=1
+            print('timeout %s' % timeoutCounter, file=sys.stderr)
+            if timeoutCounter>timeout:
+                return None
+        else:
+            s += "".join(map(chr, ch))
+            if ch == b'\r' or ch == b'\n':
+                return s
+
+def waitForLine(port, text, timeout=0):
     s=""
     found=False
-    while True:
-        ch = port.read()
-        s +="".join(map(chr, ch))
-        
-        if s==text:
-            found=True
+    timeoutCounter=0
 
-        if ch == b'\r' or ch == b'\n':
-            if found==True:
-                return s
-            else:
-                s=""
+
+    while True:
+        ch = port.read(1)
+
+        # in case of timeout return a None value
+        if ch==b'' and timeout>0:
+            timeoutCounter+=1
+            print('timeout %s' % timeoutCounter, file=sys.stderr)
+            if timeoutCounter>timeout:
+                return None
+        else:
+            s +="".join(map(chr, ch))
+            if s==text:
+                found=True
+
+            if ch == b'\r' or ch == b'\n':
+                if found==True:
+                    return s
+                else:
+                    s=""
 
 
 initSerial(port)
-
-ser = serial.Serial(port = port, baudrate = baudrate)
+ser = serial.Serial(port = port, baudrate = baudrate, timeout=None)
 ser.isOpen()
 
-print ('Command => %s' % command)
-ser.write(bytes('%s\r\n' % command, 'utf-8'))
-rcv = waitFor(ser, "OK")
-print ('Result => %s' % rcv)
+print ('Command => %s' % command, file=sys.stderr)
+ser.write(bytes('%s' % command, 'utf-8'))
+ser.write(b'\r')
 
-initSerial(port)
+rcv = waitForLine(ser, "OK", timeout=0)
+print ('%s' % rcv)
+
 ser.close()
