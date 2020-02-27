@@ -68,37 +68,71 @@ def waitForLine(port, text, timeout=0):
     found=False
     timeoutCounter=0
 
-
     while True:
-        line=port.readline()
+        line=readLine(port, timeout)
         if line==None and timeout>0:
             timeoutCounter+=1
             print('timeout %s' % timeoutCounter, file=sys.stderr)
             if timeoutCounter>timeout:
                 return None
         else:
-            if line.startswith(bytes(text,'utf-8')):
+            if line.startswith(text):
                 return line
 
+# Class rig
+#
+#
+import socket
+import logging
 
-        #ch = port.read(1)
+logger=logging.getLogger(__name__)
 
-        # in case of timeout return a None value
-        #if ch==b'' and timeout>0:
-        #    timeoutCounter+=1
-        #    print('timeout %s' % timeoutCounter, file=sys.stderr)
-        #    if timeoutCounter>timeout:
-        #        return None
-        #else:
-        #    s +="".join(map(chr, ch))
-        #    if s==text:
-        #        found=True
+class RigCtl:
+    _sock=None
+    _cfg=None
 
-        #    if ch == b'\r' or ch == b'\n':
-        #        if found==True:
-        #            return s
-        #        else:
-        #            s=""
+    def __init__(self,cfg, **args):
+        self._cfg=cfg
+        try:
+            self._sock=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self._sock.settimeout(1)
+            self._sock.connect((self._cfg['host'], self._cfg['port']))
+            self._sock.settimeout(5)
+        except Exception as e:
+            logger.exception(e)
+            raise
+        pass
+
+    def __del__(self):
+        self._sock.close()
+        pass
+
+    def get_rig(self, parameter):
+        parameter=str(parameter).lower()
+        if not str(parameter).startswith('+'):
+            parameter='+%s' % parameter
+
+        self._sock.send(bytes('%s\n' % (parameter) , 'UTF-8'  ))
+        response=self._sock.recv(512).decode('UTF-8')
+        tmp=response.split('\n')
+
+        result=dict()
+        result_item=dict()
+        for item in tmp:
+            if item.startswith('RPRT'):
+                result['result']=str(item.replace('RPRT','')).strip()
+            elif str(item.strip()).endswith(':'):
+                result['command']=item.replace(':','')
+            else:
+                keyvalue=item.split(':')
+                if len(keyvalue) == 2:
+                    key=keyvalue[0].strip()
+                    value=keyvalue[1].strip()
+                    if key!='':
+                        result_item[key]=value   
+        
+        result['response']=result_item
+        return result
 
 
 initSerial(port)
@@ -108,8 +142,11 @@ ser.isOpen()
 print ('Command => %s' % command, file=sys.stderr)
 ser.write(bytes('%s' % command, 'utf-8'))
 ser.write(b'\r')
-
 rcv = waitForLine(ser, "OK", timeout=0)
 print ('%s' % rcv)
+
+
+#rig=RigCtl({'host':'localhost', 'port': 4532})
+#print(rig.get_rig("f"))
 
 ser.close()

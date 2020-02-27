@@ -5,7 +5,12 @@
 
 // set the speed in rpm
 #define MOTOR_RPM 6
-#define DBG_LED 2
+
+#define ROTOR_STEP 2
+#define ROTOR_DIR 3
+#define ROTOR_ENABLED 4
+
+const int steps_rotate_360 = 200;
 
 Stepper stepper(STEPS, 8, 10, 9, 11);
 
@@ -19,12 +24,18 @@ int changeInDirectionOffset = 200; // Schlupf der Welle und ungenaunigkeiten der
 
 void setup()
 {
-  pinMode(DBG_LED, OUTPUT);
-  digitalWrite(DBG_LED, HIGH);
+  pinMode(ROTOR_STEP, OUTPUT);
+  pinMode(ROTOR_DIR, OUTPUT);
+  pinMode(ROTOR_ENABLED, OUTPUT);
+  digitalWrite(ROTOR_STEP, HIGH);
+  digitalWrite(ROTOR_DIR, LOW);
+  digitalWrite(ROTOR_ENABLED, LOW);
+
 
   Serial.begin(9600);
-  Serial.println("*** Welcome to the DK9MBS / KI5HDH MagLoop Stepper Controller V1.0 ***");
-  Serial.println("---");
+  //Serial.println("*** Welcome to the DK9MBS / KI5HDH MagLoop Stepper Controller V1.0 ***");
+
+  delay(1000);
 }
 
 void loop()
@@ -40,8 +51,7 @@ void loop()
       Serial.println("echo:" + cmd);
 
       if (commandName == "HELO") {
-        digitalWrite(DBG_LED,LOW);
-        result = "OK";
+        result=commandRotor(cmd);
       }
 
       if (commandName == "MZ") {
@@ -79,6 +89,21 @@ void loop()
       cmd += in;
     }
   }
+}
+
+String commandRotor(String cmd) {
+
+  digitalWrite(ROTOR_DIR, HIGH);
+  digitalWrite(ROTOR_ENABLED, HIGH);
+  for(int i = 0; i < steps_rotate_360; i++) {
+    digitalWrite(ROTOR_STEP, HIGH);
+    delay(1);
+    digitalWrite(ROTOR_STEP, LOW);
+    delay(1);
+  }
+  digitalWrite(ROTOR_ENABLED, LOW);
+
+  return "OK";
 }
 
 String commandCal(String cmd) {
