@@ -6,12 +6,6 @@
 // set the speed in rpm
 #define MOTOR_RPM 6
 
-#define ROTOR_STEP 2
-#define ROTOR_DIR 3
-#define ROTOR_ENABLED 4
-
-const int steps_rotate_360 = 200;
-
 Stepper stepper(STEPS, 8, 10, 9, 11);
 
 String cmd;
@@ -22,19 +16,24 @@ int maxPos = 4200;
 int calSteps = 100;
 int changeInDirectionOffset = 200; // Schlupf der Welle und ungenaunigkeiten der Mechanik
 
+// AZIMUT ROTOR (horizontal)
+#define ROT_AZI_STEP 2
+#define ROT_AZI_DIR 3
+#define ROT_AZI_ENABLED 4
+const int steps_rotate_360 = 2000;
+
+
 void setup()
 {
-  pinMode(ROTOR_STEP, OUTPUT);
-  pinMode(ROTOR_DIR, OUTPUT);
-  pinMode(ROTOR_ENABLED, OUTPUT);
-  digitalWrite(ROTOR_STEP, HIGH);
-  digitalWrite(ROTOR_DIR, LOW);
-  digitalWrite(ROTOR_ENABLED, LOW);
-
+  pinMode(ROT_AZI_STEP, OUTPUT);
+  pinMode(ROT_AZI_DIR, OUTPUT);
+  pinMode(ROT_AZI_ENABLED, OUTPUT);
+  digitalWrite(ROT_AZI_STEP, HIGH);
+  digitalWrite(ROT_AZI_DIR, LOW);
+  digitalWrite(ROT_AZI_ENABLED, HIGH);
 
   Serial.begin(9600);
-  //Serial.println("*** Welcome to the DK9MBS / KI5HDH MagLoop Stepper Controller V1.0 ***");
-
+  Serial.println("OK -999");
   delay(1000);
 }
 
@@ -51,6 +50,11 @@ void loop()
       Serial.println("echo:" + cmd);
 
       if (commandName == "HELO") {
+        Serial.println("KI5HDH / DK9MBS MagLoop controller firmware V0.1");
+        result="OK";
+      }
+
+      if (commandName == "ROT_AZI") {
         result=commandRotor(cmd);
       }
 
@@ -93,15 +97,15 @@ void loop()
 
 String commandRotor(String cmd) {
 
-  digitalWrite(ROTOR_DIR, HIGH);
-  digitalWrite(ROTOR_ENABLED, HIGH);
+  digitalWrite(ROT_AZI_DIR, HIGH);
+  digitalWrite(ROT_AZI_ENABLED, LOW);
   for(int i = 0; i < steps_rotate_360; i++) {
-    digitalWrite(ROTOR_STEP, HIGH);
+    digitalWrite(ROT_AZI_STEP, HIGH);
     delay(1);
-    digitalWrite(ROTOR_STEP, LOW);
+    digitalWrite(ROT_AZI_STEP, LOW);
     delay(1);
   }
-  digitalWrite(ROTOR_ENABLED, LOW);
+  digitalWrite(ROT_AZI_ENABLED, HIGH);
 
   return "OK";
 }

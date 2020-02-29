@@ -1,0 +1,96 @@
+[
+    {
+        "id": "ec00c513.cf79a8",
+        "type": "tab",
+        "label": "MagLoop",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "b7042540.3face8",
+        "type": "serial-port",
+        "z": "",
+        "serialport": "/dev/ttyUSB0",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "\\r\\n",
+        "responsetimeout": "10000"
+    },
+    {
+        "id": "e8725e8.00bd2a",
+        "type": "uibuilder",
+        "z": "ec00c513.cf79a8",
+        "name": "test",
+        "topic": "test",
+        "url": "uibuilder",
+        "fwdInMessages": false,
+        "allowScripts": false,
+        "allowStyles": false,
+        "copyIndex": true,
+        "showfolder": false,
+        "x": 120,
+        "y": 180,
+        "wires": [
+            [
+                "b2388c04.08eb8"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "67be37b4.5b3ae8",
+        "type": "serial out",
+        "z": "ec00c513.cf79a8",
+        "name": "",
+        "serial": "b7042540.3face8",
+        "x": 770,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "b3f8702f.a5df8",
+        "type": "inject",
+        "z": "ec00c513.cf79a8",
+        "name": "",
+        "topic": "",
+        "payload": "ROT_AZI",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 140,
+        "y": 60,
+        "wires": [
+            [
+                "67be37b4.5b3ae8"
+            ]
+        ]
+    },
+    {
+        "id": "b2388c04.08eb8",
+        "type": "function",
+        "z": "ec00c513.cf79a8",
+        "name": "AZI",
+        "func": "msg.payload=\"ROT_AZI 23\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 410,
+        "y": 100,
+        "wires": [
+            [
+                "67be37b4.5b3ae8"
+            ]
+        ]
+    }
+]
