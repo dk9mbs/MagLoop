@@ -14,13 +14,16 @@ int currentPos = 0;
 int minPos = 0;
 int maxPos = 4200;
 int calSteps = 100;
-int changeInDirectionOffset = 200; // Schlupf der Welle und ungenaunigkeiten der Mechanik
 
 // AZIMUT ROTOR (horizontal)
 #define ROT_AZI_STEP 2
 #define ROT_AZI_DIR 3
 #define ROT_AZI_ENABLED 4
-const int steps_rotate_360 = 2000;
+#define ROT_AZI_LIMIT_SWITCH 5
+#define ROT_ELE_LIMIT_SWITCH 6
+
+
+const int steps_rotate_360 = 200;
 
 
 void setup()
@@ -28,6 +31,9 @@ void setup()
   pinMode(ROT_AZI_STEP, OUTPUT);
   pinMode(ROT_AZI_DIR, OUTPUT);
   pinMode(ROT_AZI_ENABLED, OUTPUT);
+  pinMode(ROT_AZI_LIMIT_SWITCH,INPUT_PULLUP);
+  pinMode(ROT_ELE_LIMIT_SWITCH,INPUT_PULLUP);
+  
   digitalWrite(ROT_AZI_STEP, HIGH);
   digitalWrite(ROT_AZI_DIR, LOW);
   digitalWrite(ROT_AZI_ENABLED, HIGH);
@@ -55,7 +61,11 @@ void loop()
       }
 
       if (commandName == "ROT_AZI") {
-        result=commandRotor(cmd);
+        result=commandRotorAzi(cmd);
+      }
+
+      if (commandName == "ROT_AZI_MZ") {
+        result=commandRotorAziMz(cmd);
       }
 
       if (commandName == "MZ") {
@@ -85,7 +95,7 @@ void loop()
       if (commandName == "CAL") {
         result = commandCal(cmd);
       }
-
+      Serial.println("CAP_POS:"+String(currentPos));
       Serial.println(result);
       cmd = "";
       return;
@@ -95,17 +105,19 @@ void loop()
   }
 }
 
-String commandRotor(String cmd) {
+String commandRotorAzi(String cmd) {
+  String dir=getCommandValue(cmd, ' ', 1);
+  int steps=getCommandValue(cmd, ' ', 2).toInt();
 
-  digitalWrite(ROT_AZI_DIR, HIGH);
-  digitalWrite(ROT_AZI_ENABLED, LOW);
-  for(int i = 0; i < steps_rotate_360; i++) {
-    digitalWrite(ROT_AZI_STEP, HIGH);
-    delay(1);
-    digitalWrite(ROT_AZI_STEP, LOW);
-    delay(1);
+  moveRotorStepperAzi(dir, steps);
+
+  return "OK";
+}
+
+String commandRotorAziMz(String cmd) {
+  while (digitalRead(ROT_AZI_LIMIT_SWITCH) == LOW) {
+    moveRotorStepperAzi("L", 100);
   }
-  digitalWrite(ROT_AZI_ENABLED, HIGH);
 
   return "OK";
 }
@@ -129,7 +141,7 @@ String commandMZ(String cmd) {
     moveStepper(currentPos * -1, MOTOR_RPM);
   }
   currentPos = 0;
-  return "OK";
+  return "OK "+String(currentPos);
 }
 
 String commandAbsolute(String cmd) {
@@ -144,7 +156,7 @@ String commandAbsolute(String cmd) {
   currentPos += steps;
 
   moveStepper(steps, MOTOR_RPM);
-  return "OK";
+  return "OK "+String(currentPos);
 }
 
 String commandML(String cmd) {
@@ -156,7 +168,7 @@ String commandML(String cmd) {
 
   currentPos += steps;
   moveStepper(steps, MOTOR_RPM);
-  return "OK";
+  return "OK "+String(currentPos);
 }
 
 String commandMR(String cmd) {
@@ -168,9 +180,14 @@ String commandMR(String cmd) {
 
   currentPos -= steps;
   moveStepper(steps * -1, MOTOR_RPM);
-  return "OK";
+  return "OK "+String(currentPos);
 }
 
+/*
+ * 
+ * Helper functions
+ * 
+ */
 void moveStepper(int steps, int rpm) {
   if (steps < 0) {
     dir = "R";
@@ -187,6 +204,27 @@ void moveStepper(int steps, int rpm) {
   digitalWrite(11, LOW);
 
 }
+
+
+void moveRotorStepperAzi(String dir, int steps) {
+  if(dir=="R") {
+    digitalWrite(ROT_AZI_DIR, LOW);
+  } else {
+    digitalWrite(ROT_AZI_DIR, HIGH);
+  }
+  
+  digitalWrite(ROT_AZI_ENABLED, LOW);
+  for(int i = 0; i < steps_rotate_360*steps; i++) {
+    if(digitalRead(ROT_AZI_LIMIT_SWITCH) == HIGH) break;
+    
+    digitalWrite(ROT_AZI_STEP, HIGH);
+    delay(1);
+    digitalWrite(ROT_AZI_STEP, LOW);
+    delay(1);
+  }
+  digitalWrite(ROT_AZI_ENABLED, HIGH);
+}
+
 
 /*
    getCommandValue

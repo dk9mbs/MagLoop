@@ -1,10 +1,80 @@
 [
     {
+        "id": "544611f1.560ba",
+        "type": "tab",
+        "label": "UI",
+        "disabled": false,
+        "info": "Test"
+    },
+    {
+        "id": "cfe9d18f.af40a",
+        "type": "tab",
+        "label": "Config",
+        "disabled": false,
+        "info": ""
+    },
+    {
         "id": "ec00c513.cf79a8",
         "type": "tab",
         "label": "MagLoop",
         "disabled": false,
         "info": ""
+    },
+    {
+        "id": "6938cda6.ff97e4",
+        "type": "tab",
+        "label": "web",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "51c94715.44a8e8",
+        "type": "tab",
+        "label": "rigctld",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "1e01dbc0.92c434",
+        "type": "subflow",
+        "name": "SubFrequencyMapping",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 80,
+                "y": 260,
+                "wires": [
+                    {
+                        "id": "e79277a1.312b28"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 980,
+                "y": 160,
+                "wires": [
+                    {
+                        "id": "dceaad9b.5154e",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 980,
+                "y": 320,
+                "wires": [
+                    {
+                        "id": "dceaad9b.5154e",
+                        "port": 1
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "color": "#C7E9C0"
     },
     {
         "id": "b7042540.3face8",
@@ -23,29 +93,8 @@
         "newline": "\\n",
         "bin": "false",
         "out": "char",
-        "addchar": "\\r\\n",
+        "addchar": "\\n",
         "responsetimeout": "10000"
-    },
-    {
-        "id": "e8725e8.00bd2a",
-        "type": "uibuilder",
-        "z": "ec00c513.cf79a8",
-        "name": "test",
-        "topic": "test",
-        "url": "uibuilder",
-        "fwdInMessages": false,
-        "allowScripts": false,
-        "allowStyles": false,
-        "copyIndex": true,
-        "showfolder": false,
-        "x": 120,
-        "y": 180,
-        "wires": [
-            [
-                "b2388c04.08eb8"
-            ],
-            []
-        ]
     },
     {
         "id": "67be37b4.5b3ae8",
@@ -53,44 +102,837 @@
         "z": "ec00c513.cf79a8",
         "name": "",
         "serial": "b7042540.3face8",
-        "x": 770,
+        "x": 790,
         "y": 60,
         "wires": []
     },
     {
-        "id": "b3f8702f.a5df8",
-        "type": "inject",
+        "id": "74172512.32901c",
+        "type": "serial in",
         "z": "ec00c513.cf79a8",
         "name": "",
+        "serial": "b7042540.3face8",
+        "x": 630,
+        "y": 240,
+        "wires": [
+            [
+                "946219f.84250e8"
+            ]
+        ]
+    },
+    {
+        "id": "946219f.84250e8",
+        "type": "debug",
+        "z": "ec00c513.cf79a8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 910,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "5d8cae6b.18b39",
+        "type": "comment",
+        "z": "ec00c513.cf79a8",
+        "name": "DK9MBS / KI5HDH",
+        "info": "",
+        "x": 150,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "46aedda1.095724",
+        "type": "debug",
+        "z": "ec00c513.cf79a8",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 790,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "9e877e7.5a6058",
+        "type": "link in",
+        "z": "ec00c513.cf79a8",
+        "name": "Arduino Serial in",
+        "links": [
+            "44322955.be73b8",
+            "7b0e5a73.645744",
+            "1c88abcb.cde354",
+            "1e4f6252.15187e",
+            "80810d0b.f2e19"
+        ],
+        "x": 235,
+        "y": 100,
+        "wires": [
+            [
+                "838a0e45.20e39"
+            ]
+        ]
+    },
+    {
+        "id": "838a0e45.20e39",
+        "type": "function",
+        "z": "ec00c513.cf79a8",
+        "name": "Configuration the Serial port",
+        "func": "return msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 500,
+        "y": 100,
+        "wires": [
+            [
+                "67be37b4.5b3ae8",
+                "46aedda1.095724"
+            ]
+        ]
+    },
+    {
+        "id": "528a7c5b.3af394",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "ROT_AZI L 1",
         "topic": "",
-        "payload": "ROT_AZI",
+        "payload": "ROT_AZI L 1",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 610,
+        "y": 140,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "652ae5b.c97bd1c",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "MZ",
+        "topic": "",
+        "payload": "MZ",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 130,
+        "y": 160,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "14102e82.7d9da1",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "MA 4200",
+        "topic": "",
+        "payload": "MA 4200",
         "payloadType": "str",
         "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
         "x": 140,
-        "y": 60,
+        "y": 200,
         "wires": [
             [
-                "67be37b4.5b3ae8"
+                "7b0e5a73.645744"
             ]
         ]
     },
     {
-        "id": "b2388c04.08eb8",
-        "type": "function",
-        "z": "ec00c513.cf79a8",
-        "name": "AZI",
-        "func": "msg.payload=\"ROT_AZI 23\"\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 410,
+        "id": "32c94241.e4ce2e",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "ML 10 (C>)",
+        "topic": "",
+        "payload": "ML 10",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 140,
+        "y": 280,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "6ae3e299.0a568c",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "MR 100 (C<)",
+        "topic": "",
+        "payload": "MR 100",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 150,
+        "y": 320,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "8a1fd3a4.e09f1",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "ML 10 (C<)",
+        "topic": "",
+        "payload": "ML 10",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 140,
+        "y": 360,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "58faa170.b4c58",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "CAL (-100)",
+        "topic": "",
+        "payload": "CAL",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 140,
+        "y": 400,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "b62fdcc9.df5f1",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "SP",
+        "topic": "",
+        "payload": "SP",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 130,
+        "y": 440,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "3b25a9ac.a620f6",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "ML 100 (C >)",
+        "topic": "",
+        "payload": "ML 100",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 150,
+        "y": 240,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "7b0e5a73.645744",
+        "type": "link out",
+        "z": "544611f1.560ba",
+        "name": "",
+        "links": [
+            "9e877e7.5a6058"
+        ],
+        "x": 855,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "63dc6ada.652284",
+        "type": "inject",
+        "z": "51c94715.44a8e8",
+        "name": "rigctl get f",
+        "topic": "",
+        "payload": "f",
+        "payloadType": "str",
+        "repeat": "2",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 190,
         "y": 100,
         "wires": [
             [
-                "67be37b4.5b3ae8"
+                "ce5444e0.b695c8"
             ]
         ]
+    },
+    {
+        "id": "21241008.7adec",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "14350",
+        "topic": "",
+        "payload": "{\"frequency\": 14350, \"unit\":\"khz\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 110,
+        "y": 540,
+        "wires": [
+            [
+                "3d8f684d.5f3828"
+            ]
+        ]
+    },
+    {
+        "id": "37b00d8d.b46af2",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "7070",
+        "topic": "",
+        "payload": "{\"frequency\": 7070, \"unit\":\"khz\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 110,
+        "y": 580,
+        "wires": [
+            [
+                "3d8f684d.5f3828"
+            ]
+        ]
+    },
+    {
+        "id": "4ff668b3.750688",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "144800",
+        "topic": "",
+        "payload": "{\"frequency\": 144800, \"unit\":\"khz\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 110,
+        "y": 620,
+        "wires": [
+            [
+                "3d8f684d.5f3828"
+            ]
+        ]
+    },
+    {
+        "id": "f93ad9c4.f9fe68",
+        "type": "comment",
+        "z": "544611f1.560ba",
+        "name": "Move by Step",
+        "info": "",
+        "x": 130,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "6ce4d56f.c746fc",
+        "type": "comment",
+        "z": "544611f1.560ba",
+        "name": "Move by frequency",
+        "info": "",
+        "x": 130,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "48e53ba9.7ff024",
+        "type": "comment",
+        "z": "544611f1.560ba",
+        "name": "KI5HDH / DK9MBS",
+        "info": "",
+        "x": 130,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "e79277a1.312b28",
+        "type": "function",
+        "z": "1e01dbc0.92c434",
+        "name": "Set the frequency",
+        "func": "var unit=msg.payload.unit;\n\nif (unit!=undefined) {\n    unit=unit.toUpperCase();\n} else {\n    unit=\"MHZ\";\n}\n\nif (unit=='KHZ') {\n    msg.frequency=msg.payload.frequency*1000;\n} else {\n    msg.frequency=msg.payload.frequency;\n}\n\nnode.log(\"Hallo \"+msg.frequency);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 290,
+        "y": 260,
+        "wires": [
+            [
+                "f6efcd74.536aa"
+            ]
+        ]
+    },
+    {
+        "id": "f6efcd74.536aa",
+        "type": "file in",
+        "z": "1e01dbc0.92c434",
+        "name": "",
+        "filename": "/home/dk9mbs/freq.txt",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "x": 520,
+        "y": 260,
+        "wires": [
+            [
+                "dceaad9b.5154e"
+            ]
+        ]
+    },
+    {
+        "id": "dceaad9b.5154e",
+        "type": "function",
+        "z": "1e01dbc0.92c434",
+        "name": "frequencyToSteps",
+        "func": "var lines=msg.payload.split(\"\\n\");\nvar infreq=msg.frequency;\n\nvar lastFreq=0;\nvar lastSteps=0;\n\n//node.log(lines);\nfor (var x in lines) {\n    var line=lines[x];\n    var steps=line.split(\";\")[0];\n    var freq=line.split(\";\")[1];\n    node.log(\"Hallo1\");\n    if(lastFreq<=infreq && freq>=infreq) {\n        if(infreq-lastFreq<freq-infreq) {\n            msg.payload=\"MA \"+lastSteps;\n        } else {\n            msg.payload=\"MA \"+steps;\n        }\n        return [msg, null];\n    } else {\n        lastFreq=freq;\n        lastSteps=steps\n    }\n\n}\n\nmsg.payload= \"NO MAPPING\";\nreturn [null,msg];\n",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 750,
+        "y": 260,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "2461082d.c418d8",
+        "type": "tcp request",
+        "z": "51c94715.44a8e8",
+        "server": "localhost",
+        "port": "4532",
+        "out": "time",
+        "splitc": "0",
+        "name": "",
+        "x": 510,
+        "y": 200,
+        "wires": [
+            [
+                "c0efab0e.e4e4a8"
+            ]
+        ]
+    },
+    {
+        "id": "c0efab0e.e4e4a8",
+        "type": "function",
+        "z": "51c94715.44a8e8",
+        "name": "Convert frequency to KHz",
+        "func": "msg.payload = Buffer.from(msg.payload);\nmsg.payload = parseInt(msg.payload.toString());\n\nmsg.payload={\"frequency\": msg.payload, \"unit\": \"Mhz\"}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 510,
+        "y": 300,
+        "wires": [
+            [
+                "848b7969.2033b8"
+            ]
+        ]
+    },
+    {
+        "id": "848b7969.2033b8",
+        "type": "subflow:1e01dbc0.92c434",
+        "z": "51c94715.44a8e8",
+        "name": "",
+        "env": [],
+        "x": 520,
+        "y": 400,
+        "wires": [
+            [
+                "1c88abcb.cde354"
+            ],
+            [
+                "7540250d.28977c"
+            ]
+        ]
+    },
+    {
+        "id": "1c88abcb.cde354",
+        "type": "link out",
+        "z": "51c94715.44a8e8",
+        "name": "",
+        "links": [
+            "9e877e7.5a6058"
+        ],
+        "x": 855,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "7540250d.28977c",
+        "type": "debug",
+        "z": "51c94715.44a8e8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 510,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "3d8f684d.5f3828",
+        "type": "subflow:1e01dbc0.92c434",
+        "z": "544611f1.560ba",
+        "name": "",
+        "x": 520,
+        "y": 580,
+        "wires": [
+            [
+                "1e4f6252.15187e"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "1e4f6252.15187e",
+        "type": "link out",
+        "z": "544611f1.560ba",
+        "name": "",
+        "links": [
+            "9e877e7.5a6058"
+        ],
+        "x": 820,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "2687e599.6cc73a",
+        "type": "comment",
+        "z": "1e01dbc0.92c434",
+        "name": "Error",
+        "info": "In case of no mapping found",
+        "x": 940,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "899025b1.348b28",
+        "type": "comment",
+        "z": "1e01dbc0.92c434",
+        "name": "Success",
+        "info": "",
+        "x": 950,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "537500bf.ff83d",
+        "type": "comment",
+        "z": "1e01dbc0.92c434",
+        "name": "{\"frequency\": 123, \"unit\": \"khz\"}",
+        "info": "",
+        "x": 150,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "8f1b7625.1386b8",
+        "type": "comment",
+        "z": "1e01dbc0.92c434",
+        "name": "KI5HDH / DK9MBS",
+        "info": "",
+        "x": 110,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "e8eb95bd.5f1f68",
+        "type": "inject",
+        "z": "cfe9d18f.af40a",
+        "name": "",
+        "topic": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 150,
+        "y": 60,
+        "wires": [
+            [
+                "32a4a7ad.e32598"
+            ]
+        ]
+    },
+    {
+        "id": "32a4a7ad.e32598",
+        "type": "change",
+        "z": "cfe9d18f.af40a",
+        "name": "Rigctld",
+        "rules": [
+            {
+                "t": "set",
+                "p": "rigctl",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 470,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "90c28116.fdcd9",
+        "type": "inject",
+        "z": "cfe9d18f.af40a",
+        "name": "",
+        "topic": "",
+        "payload": "false",
+        "payloadType": "bool",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "32a4a7ad.e32598"
+            ]
+        ]
+    },
+    {
+        "id": "ce5444e0.b695c8",
+        "type": "switch",
+        "z": "51c94715.44a8e8",
+        "name": "Status rigctl",
+        "property": "rigctl",
+        "propertyType": "global",
+        "rules": [
+            {
+                "t": "true"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 470,
+        "y": 100,
+        "wires": [
+            [
+                "2461082d.c418d8"
+            ]
+        ]
+    },
+    {
+        "id": "90b2b68f.315eb8",
+        "type": "comment",
+        "z": "544611f1.560ba",
+        "name": "Move the azimuth rotor",
+        "info": "",
+        "x": 740,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "be980834.500368",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "ROT_AZI R 1",
+        "topic": "",
+        "payload": "ROT_AZI R 1",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 870,
+        "y": 140,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "d0542e7a.a5c73",
+        "type": "function",
+        "z": "6938cda6.ff97e4",
+        "name": "Build the MZ cmd",
+        "func": "msg.payload='MZ'+'\\n';\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 310,
+        "y": 80,
+        "wires": [
+            [
+                "80810d0b.f2e19"
+            ]
+        ]
+    },
+    {
+        "id": "782784db.19161c",
+        "type": "http in",
+        "z": "6938cda6.ff97e4",
+        "name": "MZ Endpoint",
+        "url": "/magloop/MZ",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 500,
+        "wires": [
+            [
+                "d0542e7a.a5c73",
+                "f74afcbe.7ab97",
+                "38a42b5a.b2b3d4"
+            ]
+        ]
+    },
+    {
+        "id": "f74afcbe.7ab97",
+        "type": "template",
+        "z": "6938cda6.ff97e4",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "\n<table border=\"1\">\n    <tr>\n        <td>Command</td>\n        <td>Value</td>\n    </tr>\n    <tr>\n        <td>MA</td>\n        <td>{{req.params.value}}</td>\n    </tr>\n</table>\n\n{{payload.test}}\n\n<form method=\"get\">\n    <input type=\"text\" value=\"0\" name=\"value\">\n    <input type=\"submit\" value=\"MA\" name=\"command\"/>\n<input type=\"submit\" value=\"MZ\" name=\"command\"/>\n</form>",
+        "output": "str",
+        "x": 640,
+        "y": 500,
+        "wires": [
+            [
+                "3066c77e.e78a58"
+            ]
+        ]
+    },
+    {
+        "id": "3066c77e.e78a58",
+        "type": "http response",
+        "z": "6938cda6.ff97e4",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 930,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "83852c89.cf647",
+        "type": "http in",
+        "z": "6938cda6.ff97e4",
+        "name": "MA Endpoint",
+        "url": "/magloop/MA/:value",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 310,
+        "y": 240,
+        "wires": [
+            [
+                "f74afcbe.7ab97",
+                "86bd926b.3583"
+            ]
+        ]
+    },
+    {
+        "id": "86bd926b.3583",
+        "type": "function",
+        "z": "6938cda6.ff97e4",
+        "name": "Buid the MA cmd",
+        "func": "msg.payload='MA '+msg.req.params.value+'\\n';\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 690,
+        "y": 180,
+        "wires": [
+            [
+                "80810d0b.f2e19"
+            ]
+        ]
+    },
+    {
+        "id": "80810d0b.f2e19",
+        "type": "link out",
+        "z": "6938cda6.ff97e4",
+        "name": "",
+        "links": [
+            "9e877e7.5a6058"
+        ],
+        "x": 860,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "38a42b5a.b2b3d4",
+        "type": "debug",
+        "z": "6938cda6.ff97e4",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 320,
+        "y": 580,
+        "wires": []
     }
 ]
