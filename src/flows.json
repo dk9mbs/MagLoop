@@ -16,14 +16,14 @@
     {
         "id": "ec00c513.cf79a8",
         "type": "tab",
-        "label": "MagLoop",
+        "label": "Hardware",
         "disabled": false,
         "info": ""
     },
     {
         "id": "6938cda6.ff97e4",
         "type": "tab",
-        "label": "web",
+        "label": "REST API",
         "disabled": false,
         "info": ""
     },
@@ -97,6 +97,143 @@
         "responsetimeout": "10000"
     },
     {
+        "id": "e6356203.1547f",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-dark",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "reset": false
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#097479",
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#000000",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#0eb8c0",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#555555",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#eeeeee",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey"
+            }
+        },
+        "site": {
+            "name": "KI5HDH",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "true",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "e9ad140b.996e18",
+        "type": "ui_tab",
+        "z": "",
+        "name": "DK9MBS / KI5HDH MagLoop Control Center",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": true
+    },
+    {
+        "id": "12344724.fb8679",
+        "type": "ui_group",
+        "z": "",
+        "name": "Rotor (Azimut)",
+        "tab": "e9ad140b.996e18",
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "9e941b5c.2af388",
+        "type": "ui_group",
+        "z": "",
+        "name": "C",
+        "tab": "e9ad140b.996e18",
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "890dc190.2094b",
+        "type": "ui_group",
+        "z": "",
+        "name": "Rigctl",
+        "tab": "e9ad140b.996e18",
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
         "id": "67be37b4.5b3ae8",
         "type": "serial out",
         "z": "ec00c513.cf79a8",
@@ -112,28 +249,14 @@
         "z": "ec00c513.cf79a8",
         "name": "",
         "serial": "b7042540.3face8",
-        "x": 630,
-        "y": 240,
+        "x": 150,
+        "y": 200,
         "wires": [
             [
-                "946219f.84250e8"
+                "1809fc68.c463a4",
+                "f56bd427.ac9098"
             ]
         ]
-    },
-    {
-        "id": "946219f.84250e8",
-        "type": "debug",
-        "z": "ec00c513.cf79a8",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "x": 910,
-        "y": 240,
-        "wires": []
     },
     {
         "id": "5d8cae6b.18b39",
@@ -150,7 +273,7 @@
         "type": "debug",
         "z": "ec00c513.cf79a8",
         "name": "",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -164,12 +287,11 @@
         "id": "9e877e7.5a6058",
         "type": "link in",
         "z": "ec00c513.cf79a8",
-        "name": "Arduino Serial in",
+        "name": "Send data to hardware",
         "links": [
-            "44322955.be73b8",
-            "7b0e5a73.645744",
             "1c88abcb.cde354",
             "1e4f6252.15187e",
+            "7b0e5a73.645744",
             "80810d0b.f2e19"
         ],
         "x": 235,
@@ -198,46 +320,6 @@
         ]
     },
     {
-        "id": "528a7c5b.3af394",
-        "type": "inject",
-        "z": "544611f1.560ba",
-        "name": "ROT_AZI L 1",
-        "topic": "",
-        "payload": "ROT_AZI L 1",
-        "payloadType": "str",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 610,
-        "y": 140,
-        "wires": [
-            [
-                "7b0e5a73.645744"
-            ]
-        ]
-    },
-    {
-        "id": "652ae5b.c97bd1c",
-        "type": "inject",
-        "z": "544611f1.560ba",
-        "name": "MZ",
-        "topic": "",
-        "payload": "MZ",
-        "payloadType": "str",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 130,
-        "y": 160,
-        "wires": [
-            [
-                "7b0e5a73.645744"
-            ]
-        ]
-    },
-    {
         "id": "14102e82.7d9da1",
         "type": "inject",
         "z": "544611f1.560ba",
@@ -249,88 +331,8 @@
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "x": 140,
-        "y": 200,
-        "wires": [
-            [
-                "7b0e5a73.645744"
-            ]
-        ]
-    },
-    {
-        "id": "32c94241.e4ce2e",
-        "type": "inject",
-        "z": "544611f1.560ba",
-        "name": "ML 10 (C>)",
-        "topic": "",
-        "payload": "ML 10",
-        "payloadType": "str",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 140,
-        "y": 280,
-        "wires": [
-            [
-                "7b0e5a73.645744"
-            ]
-        ]
-    },
-    {
-        "id": "6ae3e299.0a568c",
-        "type": "inject",
-        "z": "544611f1.560ba",
-        "name": "MR 100 (C<)",
-        "topic": "",
-        "payload": "MR 100",
-        "payloadType": "str",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 150,
-        "y": 320,
-        "wires": [
-            [
-                "7b0e5a73.645744"
-            ]
-        ]
-    },
-    {
-        "id": "8a1fd3a4.e09f1",
-        "type": "inject",
-        "z": "544611f1.560ba",
-        "name": "ML 10 (C<)",
-        "topic": "",
-        "payload": "ML 10",
-        "payloadType": "str",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 140,
-        "y": 360,
-        "wires": [
-            [
-                "7b0e5a73.645744"
-            ]
-        ]
-    },
-    {
-        "id": "58faa170.b4c58",
-        "type": "inject",
-        "z": "544611f1.560ba",
-        "name": "CAL (-100)",
-        "topic": "",
-        "payload": "CAL",
-        "payloadType": "str",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 140,
-        "y": 400,
+        "x": 700,
+        "y": 480,
         "wires": [
             [
                 "7b0e5a73.645744"
@@ -349,28 +351,8 @@
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "x": 130,
-        "y": 440,
-        "wires": [
-            [
-                "7b0e5a73.645744"
-            ]
-        ]
-    },
-    {
-        "id": "3b25a9ac.a620f6",
-        "type": "inject",
-        "z": "544611f1.560ba",
-        "name": "ML 100 (C >)",
-        "topic": "",
-        "payload": "ML 100",
-        "payloadType": "str",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 150,
-        "y": 240,
+        "x": 690,
+        "y": 420,
         "wires": [
             [
                 "7b0e5a73.645744"
@@ -401,7 +383,7 @@
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "x": 190,
+        "x": 150,
         "y": 100,
         "wires": [
             [
@@ -475,8 +457,8 @@
         "z": "544611f1.560ba",
         "name": "Move by Step",
         "info": "",
-        "x": 130,
-        "y": 120,
+        "x": 290,
+        "y": 60,
         "wires": []
     },
     {
@@ -538,7 +520,7 @@
         "type": "function",
         "z": "1e01dbc0.92c434",
         "name": "frequencyToSteps",
-        "func": "var lines=msg.payload.split(\"\\n\");\nvar infreq=msg.frequency;\n\nvar lastFreq=0;\nvar lastSteps=0;\n\n//node.log(lines);\nfor (var x in lines) {\n    var line=lines[x];\n    var steps=line.split(\";\")[0];\n    var freq=line.split(\";\")[1];\n    node.log(\"Hallo1\");\n    if(lastFreq<=infreq && freq>=infreq) {\n        if(infreq-lastFreq<freq-infreq) {\n            msg.payload=\"MA \"+lastSteps;\n        } else {\n            msg.payload=\"MA \"+steps;\n        }\n        return [msg, null];\n    } else {\n        lastFreq=freq;\n        lastSteps=steps\n    }\n\n}\n\nmsg.payload= \"NO MAPPING\";\nreturn [null,msg];\n",
+        "func": "var lines=msg.payload.split(\"\\n\");\nvar infreq=msg.frequency;\n\nvar lastFreq=0;\nvar lastSteps=0;\n\n//node.log(lines);\nfor (var x in lines) {\n    var line=lines[x];\n    var steps=line.split(\";\")[0];\n    var freq=line.split(\";\")[1];\n    //node.log(\"Hallo1\");\n    if(lastFreq<=infreq && freq>=infreq) {\n        if(infreq-lastFreq<freq-infreq) {\n            msg.payload=\"MA \"+lastSteps;\n        } else {\n            msg.payload=\"MA \"+steps;\n        }\n        return [msg, null];\n    } else {\n        lastFreq=freq;\n        lastSteps=steps\n    }\n\n}\n\nmsg.payload= \"NO MAPPING\";\nreturn [null,msg];\n",
         "outputs": 2,
         "noerr": 0,
         "x": 750,
@@ -569,7 +551,7 @@
         "id": "c0efab0e.e4e4a8",
         "type": "function",
         "z": "51c94715.44a8e8",
-        "name": "Convert frequency to KHz",
+        "name": "Create frequency object",
         "func": "msg.payload = Buffer.from(msg.payload);\nmsg.payload = parseInt(msg.payload.toString());\n\nmsg.payload={\"frequency\": msg.payload, \"unit\": \"Mhz\"}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
@@ -577,7 +559,8 @@
         "y": 300,
         "wires": [
             [
-                "848b7969.2033b8"
+                "90046b.5e17eb98",
+                "b398ef8f.6428b"
             ]
         ]
     },
@@ -587,8 +570,8 @@
         "z": "51c94715.44a8e8",
         "name": "",
         "env": [],
-        "x": 520,
-        "y": 400,
+        "x": 530,
+        "y": 500,
         "wires": [
             [
                 "1c88abcb.cde354"
@@ -606,8 +589,8 @@
         "links": [
             "9e877e7.5a6058"
         ],
-        "x": 855,
-        "y": 400,
+        "x": 875,
+        "y": 480,
         "wires": []
     },
     {
@@ -615,14 +598,14 @@
         "type": "debug",
         "z": "51c94715.44a8e8",
         "name": "",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
         "complete": "true",
         "targetType": "full",
         "x": 510,
-        "y": 500,
+        "y": 580,
         "wires": []
     },
     {
@@ -630,7 +613,7 @@
         "type": "subflow:1e01dbc0.92c434",
         "z": "544611f1.560ba",
         "name": "",
-        "x": 520,
+        "x": 610,
         "y": 580,
         "wires": [
             [
@@ -647,8 +630,8 @@
         "links": [
             "9e877e7.5a6058"
         ],
-        "x": 820,
-        "y": 540,
+        "x": 915,
+        "y": 520,
         "wires": []
     },
     {
@@ -785,64 +768,9 @@
         "z": "544611f1.560ba",
         "name": "Move the azimuth rotor",
         "info": "",
-        "x": 740,
-        "y": 100,
+        "x": 840,
+        "y": 20,
         "wires": []
-    },
-    {
-        "id": "be980834.500368",
-        "type": "inject",
-        "z": "544611f1.560ba",
-        "name": "ROT_AZI R 1",
-        "topic": "",
-        "payload": "ROT_AZI R 1",
-        "payloadType": "str",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 870,
-        "y": 140,
-        "wires": [
-            [
-                "7b0e5a73.645744"
-            ]
-        ]
-    },
-    {
-        "id": "d0542e7a.a5c73",
-        "type": "function",
-        "z": "6938cda6.ff97e4",
-        "name": "Build the MZ cmd",
-        "func": "msg.payload='MZ'+'\\n';\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 310,
-        "y": 80,
-        "wires": [
-            [
-                "80810d0b.f2e19"
-            ]
-        ]
-    },
-    {
-        "id": "782784db.19161c",
-        "type": "http in",
-        "z": "6938cda6.ff97e4",
-        "name": "MZ Endpoint",
-        "url": "/magloop/MZ",
-        "method": "get",
-        "upload": false,
-        "swaggerDoc": "",
-        "x": 110,
-        "y": 500,
-        "wires": [
-            [
-                "d0542e7a.a5c73",
-                "f74afcbe.7ab97",
-                "38a42b5a.b2b3d4"
-            ]
-        ]
     },
     {
         "id": "f74afcbe.7ab97",
@@ -855,8 +783,8 @@
         "syntax": "mustache",
         "template": "\n<table border=\"1\">\n    <tr>\n        <td>Command</td>\n        <td>Value</td>\n    </tr>\n    <tr>\n        <td>MA</td>\n        <td>{{req.params.value}}</td>\n    </tr>\n</table>\n\n{{payload.test}}\n\n<form method=\"get\">\n    <input type=\"text\" value=\"0\" name=\"value\">\n    <input type=\"submit\" value=\"MA\" name=\"command\"/>\n<input type=\"submit\" value=\"MZ\" name=\"command\"/>\n</form>",
         "output": "str",
-        "x": 640,
-        "y": 500,
+        "x": 520,
+        "y": 380,
         "wires": [
             [
                 "3066c77e.e78a58"
@@ -870,8 +798,8 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 930,
-        "y": 500,
+        "x": 870,
+        "y": 380,
         "wires": []
     },
     {
@@ -883,8 +811,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 310,
-        "y": 240,
+        "x": 190,
+        "y": 220,
         "wires": [
             [
                 "f74afcbe.7ab97",
@@ -900,8 +828,8 @@
         "func": "msg.payload='MA '+msg.req.params.value+'\\n';\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 690,
-        "y": 180,
+        "x": 530,
+        "y": 140,
         "wires": [
             [
                 "80810d0b.f2e19"
@@ -916,23 +844,913 @@
         "links": [
             "9e877e7.5a6058"
         ],
-        "x": 860,
-        "y": 80,
+        "x": 895,
+        "y": 100,
         "wires": []
     },
     {
-        "id": "38a42b5a.b2b3d4",
+        "id": "8a5e2673.4dca28",
+        "type": "change",
+        "z": "ec00c513.cf79a8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "cap_pos",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 540,
+        "y": 360,
+        "wires": [
+            [
+                "238fe4eb.7f9fcc"
+            ]
+        ]
+    },
+    {
+        "id": "19cc3fcf.9f49",
+        "type": "function",
+        "z": "ec00c513.cf79a8",
+        "name": "Get Value",
+        "func": "var keyValue=msg.payload.split(\":\");\nvar pos=parseInt(keyValue[1]);\n\nmsg.payload=pos;\n\nreturn [msg,null];",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 320,
+        "y": 360,
+        "wires": [
+            [
+                "8a5e2673.4dca28"
+            ]
+        ]
+    },
+    {
+        "id": "1809fc68.c463a4",
+        "type": "switch",
+        "z": "ec00c513.cf79a8",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "CAP_POS:",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "ECHO:",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "ROT_AZI_POS",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "LAST_CMD:",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 90,
+        "y": 340,
+        "wires": [
+            [
+                "19cc3fcf.9f49"
+            ],
+            [
+                "46cd0230.03b5dc"
+            ],
+            [
+                "4fdf85b6.ce2b5c"
+            ],
+            [
+                "b034230e.7d715"
+            ]
+        ],
+        "outputLabels": [
+            "CAP_POS ",
+            "ECHO",
+            "ROT_AZI_POS",
+            "LAST_CMD"
+        ]
+    },
+    {
+        "id": "238fe4eb.7f9fcc",
+        "type": "ui_text",
+        "z": "ec00c513.cf79a8",
+        "group": "890dc190.2094b",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Aktuelle C Stellung",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 790,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "e5f3b0cf.880f",
+        "type": "ui_button",
+        "z": "544611f1.560ba",
+        "name": "",
+        "group": "9e941b5c.2af388",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "label": "Null Stellung",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "MZ",
+        "payloadType": "str",
+        "topic": "",
+        "x": 290,
+        "y": 100,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "df769a02.e046b8",
+        "type": "ui_button",
+        "z": "544611f1.560ba",
+        "name": "",
+        "group": "9e941b5c.2af388",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "label": "ML 100 (C>)",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "ML 100",
+        "payloadType": "str",
+        "topic": "",
+        "x": 290,
+        "y": 180,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "db9359e9.9143a8",
+        "type": "ui_button",
+        "z": "544611f1.560ba",
+        "name": "",
+        "group": "9e941b5c.2af388",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "label": "ML 10 (C>)",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "ML 10",
+        "payloadType": "str",
+        "topic": "",
+        "x": 290,
+        "y": 220,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "8a348743.29f4a8",
+        "type": "ui_button",
+        "z": "544611f1.560ba",
+        "name": "",
+        "group": "9e941b5c.2af388",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "label": "MR 10 (C<)",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "MR 10",
+        "payloadType": "str",
+        "topic": "",
+        "x": 290,
+        "y": 260,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "8f864d8a.e2e2b",
+        "type": "ui_button",
+        "z": "544611f1.560ba",
+        "name": "",
+        "group": "9e941b5c.2af388",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "label": "MR 100 (C<)",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "MR 100",
+        "payloadType": "str",
+        "topic": "",
+        "x": 290,
+        "y": 300,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "68bd7b49.9dcfe4",
+        "type": "ui_button",
+        "z": "544611f1.560ba",
+        "name": "ROT_AZI R 1",
+        "group": "12344724.fb8679",
+        "order": 0,
+        "width": "0",
+        "height": "0",
+        "passthru": true,
+        "label": "Rechts drehen",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "ROT_AZI R 1",
+        "payloadType": "str",
+        "topic": "",
+        "x": 960,
+        "y": 120,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "c6a8e657.4a1f28",
+        "type": "ui_button",
+        "z": "544611f1.560ba",
+        "name": "ROT_AZI L 1",
+        "group": "12344724.fb8679",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "label": "Links drehen",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "ROT_AZI L 1",
+        "payloadType": "str",
+        "topic": "",
+        "x": 690,
+        "y": 60,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "e1ec2ead.d0699",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 100,
+        "y": 180,
+        "wires": [
+            [
+                "df769a02.e046b8"
+            ]
+        ]
+    },
+    {
+        "id": "6b635598.ed768c",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 100,
+        "y": 100,
+        "wires": [
+            [
+                "e5f3b0cf.880f"
+            ]
+        ]
+    },
+    {
+        "id": "88371ef8.57f51",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 100,
+        "y": 220,
+        "wires": [
+            [
+                "db9359e9.9143a8"
+            ]
+        ]
+    },
+    {
+        "id": "54b22647.1780b8",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 100,
+        "y": 260,
+        "wires": [
+            [
+                "8a348743.29f4a8"
+            ]
+        ]
+    },
+    {
+        "id": "a8d0ee07.fa3ee",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 100,
+        "y": 300,
+        "wires": [
+            [
+                "8f864d8a.e2e2b"
+            ]
+        ]
+    },
+    {
+        "id": "1afc9416.ac37ac",
+        "type": "ui_switch",
+        "z": "cfe9d18f.af40a",
+        "name": "",
+        "label": "Rigctl Abfrage",
+        "tooltip": "",
+        "group": "890dc190.2094b",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "x": 250,
+        "y": 220,
+        "wires": [
+            [
+                "32a4a7ad.e32598"
+            ]
+        ]
+    },
+    {
+        "id": "b398ef8f.6428b",
+        "type": "rbe",
+        "z": "51c94715.44a8e8",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "property": "payload",
+        "x": 530,
+        "y": 380,
+        "wires": [
+            [
+                "848b7969.2033b8"
+            ]
+        ]
+    },
+    {
+        "id": "90046b.5e17eb98",
+        "type": "ui_text",
+        "z": "51c94715.44a8e8",
+        "group": "890dc190.2094b",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "QRG",
+        "format": "{{msg.payload.frequency}} Hz",
+        "layout": "row-spread",
+        "x": 850,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "cc5daff2.32d8f",
+        "type": "ui_button",
+        "z": "544611f1.560ba",
+        "name": "",
+        "group": "9e941b5c.2af388",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "label": "ML 1000 (C>)",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "ML 1000",
+        "payloadType": "str",
+        "topic": "",
+        "x": 300,
+        "y": 140,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "92d2a61a.bfc168",
+        "type": "ui_button",
+        "z": "544611f1.560ba",
+        "name": "",
+        "group": "9e941b5c.2af388",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "label": "MR 1000 (C<)",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "MR 1000",
+        "payloadType": "str",
+        "topic": "",
+        "x": 300,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bfe03c87.dd5aa",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 100,
+        "y": 140,
+        "wires": [
+            [
+                "cc5daff2.32d8f"
+            ]
+        ]
+    },
+    {
+        "id": "6268e979.bfbb88",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 100,
+        "y": 340,
+        "wires": [
+            [
+                "92d2a61a.bfc168"
+            ]
+        ]
+    },
+    {
+        "id": "2c02714f.2a1d5e",
+        "type": "ui_button",
+        "z": "544611f1.560ba",
+        "name": "",
+        "group": "9e941b5c.2af388",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "label": "CAL (-100)",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "CAL",
+        "payloadType": "str",
+        "topic": "",
+        "x": 290,
+        "y": 380,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "5c8bb6ca.c3d4d8",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 100,
+        "y": 380,
+        "wires": [
+            [
+                "2c02714f.2a1d5e"
+            ]
+        ]
+    },
+    {
+        "id": "4ecaa3cd.69d1ac",
+        "type": "ui_button",
+        "z": "544611f1.560ba",
+        "name": "",
+        "group": "12344724.fb8679",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "label": "Grundposition",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "ROT_AZI_MZ",
+        "payloadType": "str",
+        "topic": "",
+        "x": 700,
+        "y": 100,
+        "wires": [
+            [
+                "7b0e5a73.645744"
+            ]
+        ]
+    },
+    {
+        "id": "c726a913.3c0d48",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 540,
+        "y": 100,
+        "wires": [
+            [
+                "4ecaa3cd.69d1ac"
+            ]
+        ]
+    },
+    {
+        "id": "c97107bb.69ba78",
+        "type": "ui_template",
+        "z": "544611f1.560ba",
+        "group": "12344724.fb8679",
+        "name": "",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "format": "<md-button class=\"vibrate filled touched bigfont rounded\" style=\"background-color:#333333\" ng-click=\"send({'payload': '123' })\">\n\n\n<svg  width=\"260px\" height=\"90px\" version=\"1.1\" viewBox=\"0 0 800 200\">\n <g id=\"Button_Long\">\n\n  <rect fill=\"#333333\" width=\"800\" height=\"200\"/>\n  <g ng-style=\"{fill: (msg.payload || 0) ? 'lime' : 'red'}\">\n    <rect width=\"800\" height=\"200\" rx=\"80\" ry=\"80\"/>\n  </g>\n\n  <rect fill=\"#333333\" x=\"11\" y=\"10\" width=\"778\" height=\"180\" rx=\"90\" ry=\"90\"/>\n  <g ng-style=\"{fill: (msg.payload || 0) ? 'lime' : 'red'}\">\n\n    <text x=\"400\" y=\"125\" style=\"text-anchor:middle\"  font-weight=\"bold\" font-size=\"80\" font-family=\"Arial\">{{(msg.payload||0)? \" OPEN \" : \"CLOSED\"}} </text>\n    </g>\n  </g>\n</svg>\n\n</md-button>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "templateScope": "local",
+        "x": 260,
+        "y": 440,
+        "wires": [
+            [
+                "48df2cff.3a9f54"
+            ]
+        ]
+    },
+    {
+        "id": "48df2cff.3a9f54",
         "type": "debug",
-        "z": "6938cda6.ff97e4",
+        "z": "544611f1.560ba",
         "name": "",
         "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
+        "complete": "false",
+        "x": 460,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "ce240ad4.4b5828",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 540,
+        "y": 60,
+        "wires": [
+            [
+                "c6a8e657.4a1f28"
+            ]
+        ]
+    },
+    {
+        "id": "fdc914c5.2ffac8",
+        "type": "inject",
+        "z": "544611f1.560ba",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 920,
+        "y": 80,
+        "wires": [
+            [
+                "68bd7b49.9dcfe4"
+            ]
+        ]
+    },
+    {
+        "id": "485fe82e.29d2a8",
+        "type": "ui_text",
+        "z": "ec00c513.cf79a8",
+        "group": "890dc190.2094b",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Kommando",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 770,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "46cd0230.03b5dc",
+        "type": "function",
+        "z": "ec00c513.cf79a8",
+        "name": "Get Value",
+        "func": "var keyValue=msg.payload.split(\":\");\nvar lastCommand=keyValue[1];\n\nmsg.payload=lastCommand;\n\nreturn {'payload': lastCommand};\n",
+        "outputs": 1,
+        "noerr": 0,
         "x": 320,
-        "y": 580,
+        "y": 400,
+        "wires": [
+            [
+                "456d6616.d76ba8"
+            ]
+        ]
+    },
+    {
+        "id": "f56bd427.ac9098",
+        "type": "link out",
+        "z": "ec00c513.cf79a8",
+        "name": "Recive data from hardware",
+        "links": [],
+        "x": 720,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "b034230e.7d715",
+        "type": "function",
+        "z": "ec00c513.cf79a8",
+        "name": "Get Value",
+        "func": "var keyValue=msg.payload.split(\":\");\nvar lastCommand=keyValue[1];\n\nmsg.payload=lastCommand;\n\nreturn {'payload': lastCommand};\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 320,
+        "y": 480,
+        "wires": [
+            [
+                "1de8c201.2c5ade"
+            ]
+        ]
+    },
+    {
+        "id": "1fd5fa9a.171a65",
+        "type": "ui_text",
+        "z": "ec00c513.cf79a8",
+        "group": "890dc190.2094b",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Rückmeldung",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 780,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "456d6616.d76ba8",
+        "type": "change",
+        "z": "ec00c513.cf79a8",
+        "name": "set global.echo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "echo",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 520,
+        "y": 400,
+        "wires": [
+            [
+                "485fe82e.29d2a8"
+            ]
+        ]
+    },
+    {
+        "id": "1de8c201.2c5ade",
+        "type": "change",
+        "z": "ec00c513.cf79a8",
+        "name": "set global.last_cmd",
+        "rules": [
+            {
+                "t": "set",
+                "p": "last_cmd",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 530,
+        "y": 480,
+        "wires": [
+            [
+                "1fd5fa9a.171a65"
+            ]
+        ]
+    },
+    {
+        "id": "4fdf85b6.ce2b5c",
+        "type": "function",
+        "z": "ec00c513.cf79a8",
+        "name": "Get Value",
+        "func": "var keyValue=msg.payload.split(\":\");\nvar pos=parseInt(keyValue[1]);\n\nmsg.payload=pos;\n\nreturn [msg,null];",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 320,
+        "y": 440,
+        "wires": [
+            [
+                "d023a49f.0a8348"
+            ]
+        ]
+    },
+    {
+        "id": "d023a49f.0a8348",
+        "type": "change",
+        "z": "ec00c513.cf79a8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "rot_azi_pos",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 550,
+        "y": 440,
+        "wires": [
+            [
+                "fe6d34c3.244708"
+            ]
+        ]
+    },
+    {
+        "id": "fe6d34c3.244708",
+        "type": "ui_text",
+        "z": "ec00c513.cf79a8",
+        "group": "890dc190.2094b",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Position Azi.",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 770,
+        "y": 440,
         "wires": []
     }
 ]

@@ -22,6 +22,7 @@ int calSteps = 100;
 #define ROT_AZI_LIMIT_SWITCH 5
 #define ROT_ELE_LIMIT_SWITCH 6
 
+#define ROT_STEPS_AFTER_LIMIT 1
 
 const int steps_rotate_360 = 200;
 
@@ -41,6 +42,9 @@ void setup()
   Serial.begin(9600);
   Serial.println("OK -999");
   delay(1000);
+
+  commandRotorAziMz("ROT_AZI_MZ");
+  delay(1000);
 }
 
 void loop()
@@ -53,7 +57,7 @@ void loop()
 
     if (in == 13 || in == 10) {
       commandName = getCommandValue(cmd, ' ', 0);
-      Serial.println("echo:" + cmd);
+      Serial.println("ECHO:" + cmd);
 
       if (commandName == "HELO") {
         Serial.println("KI5HDH / DK9MBS MagLoop controller firmware V0.1");
@@ -96,6 +100,8 @@ void loop()
         result = commandCal(cmd);
       }
       Serial.println("CAP_POS:"+String(currentPos));
+      Serial.println("ROT_AZI_POS:0");
+      Serial.println("LAST_CMD:"+cmd);
       Serial.println(result);
       cmd = "";
       return;
@@ -109,15 +115,26 @@ String commandRotorAzi(String cmd) {
   String dir=getCommandValue(cmd, ' ', 1);
   int steps=getCommandValue(cmd, ' ', 2).toInt();
 
-  moveRotorStepperAzi(dir, steps);
+  moveRotorStepperAzi(dir, steps,1);
+
+   if(digitalRead(ROT_AZI_LIMIT_SWITCH)) {
+      if(dir=="L") {
+        moveRotorStepperAzi("R",ROT_STEPS_AFTER_LIMIT,0);
+      } else {
+        moveRotorStepperAzi("L",ROT_STEPS_AFTER_LIMIT,0);
+      }
+    }
 
   return "OK";
 }
 
 String commandRotorAziMz(String cmd) {
+  //if (digitalRead(ROT_AZI_LIMIT_SWITCH) == HIGH) moveRotorStepperAzi("L", ROT_STEPS_AFTER_LIMIT,0);
+  
   while (digitalRead(ROT_AZI_LIMIT_SWITCH) == LOW) {
-    moveRotorStepperAzi("L", 100);
+    moveRotorStepperAzi("L", 1,1);
   }
+  moveRotorStepperAzi("R", ROT_STEPS_AFTER_LIMIT,0);
 
   return "OK";
 }
@@ -206,7 +223,7 @@ void moveStepper(int steps, int rpm) {
 }
 
 
-void moveRotorStepperAzi(String dir, int steps) {
+void moveRotorStepperAzi(String dir, int steps , int readLimitSwitch) {
   if(dir=="R") {
     digitalWrite(ROT_AZI_DIR, LOW);
   } else {
@@ -215,7 +232,11 @@ void moveRotorStepperAzi(String dir, int steps) {
   
   digitalWrite(ROT_AZI_ENABLED, LOW);
   for(int i = 0; i < steps_rotate_360*steps; i++) {
-    if(digitalRead(ROT_AZI_LIMIT_SWITCH) == HIGH) break;
+    
+    if(digitalRead(ROT_AZI_LIMIT_SWITCH) == HIGH && readLimitSwitch==1){
+      delay(10);
+      break;
+    }
     
     digitalWrite(ROT_AZI_STEP, HIGH);
     delay(1);
