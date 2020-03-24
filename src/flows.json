@@ -35,6 +35,13 @@
         "info": ""
     },
     {
+        "id": "170dd139.49cf4f",
+        "type": "tab",
+        "label": "UrbanFarm",
+        "disabled": false,
+        "info": ""
+    },
+    {
         "id": "1e01dbc0.92c434",
         "type": "subflow",
         "name": "Get capacitor step by frequency",
@@ -74,7 +81,7 @@
             }
         ],
         "env": [],
-        "color": "#C7E9C0"
+        "color": "#FFCC66"
     },
     {
         "id": "b4e6292.cbfffd8",
@@ -88,7 +95,7 @@
                 "y": 100,
                 "wires": [
                     {
-                        "id": "95f0955c.624ba8"
+                        "id": "c473009a.72738"
                     }
                 ]
             }
@@ -106,7 +113,104 @@
             }
         ],
         "env": [],
-        "color": "#DDAA99"
+        "color": "#FFCC66",
+        "inputLabels": [
+            "msg.filename"
+        ]
+    },
+    {
+        "id": "75c7db31.d3a664",
+        "type": "subflow",
+        "name": "Add frequency step mapping",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 50,
+                "y": 30,
+                "wires": [
+                    {
+                        "id": "ff5daf8d.4ecba"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 720,
+                "y": 280,
+                "wires": [
+                    {
+                        "id": "cd65441e.433928",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "color": "#FFCC66",
+        "icon": "font-awesome/fa-ils"
+    },
+    {
+        "id": "90d86bc3.3bda78",
+        "type": "subflow",
+        "name": "Convert frequency unit",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 50,
+                "y": 30,
+                "wires": [
+                    {
+                        "id": "df304312.a17e8"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 860,
+                "y": 340,
+                "wires": [
+                    {
+                        "id": "df304312.a17e8",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 860,
+                "y": 400,
+                "wires": [
+                    {
+                        "id": "df304312.a17e8",
+                        "port": 1
+                    }
+                ]
+            },
+            {
+                "x": 860,
+                "y": 460,
+                "wires": [
+                    {
+                        "id": "df304312.a17e8",
+                        "port": 2
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "color": "#FFCC66",
+        "inputLabels": [
+            "frequency object"
+        ],
+        "outputLabels": [
+            "Hz",
+            "KHz",
+            "MHz"
+        ],
+        "icon": "font-awesome/fa-calculator"
     },
     {
         "id": "b7042540.3face8",
@@ -300,12 +404,106 @@
         "collapse": false
     },
     {
+        "id": "f0731d1f.b9dff",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "local",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "c1744440.fe2508",
+        "type": "ui_tab",
+        "z": "",
+        "name": "UrbanFarm",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "2f3b7e91.dba462",
+        "type": "ui_group",
+        "z": "",
+        "name": "Box 3",
+        "tab": "c1744440.fe2508",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "1bba4ec8.8ccb11",
+        "type": "ui_group",
+        "z": "",
+        "name": "Box 2",
+        "tab": "c1744440.fe2508",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "1cca3cdc.6af163",
+        "type": "ui_group",
+        "z": "",
+        "name": "Box 1",
+        "tab": "c1744440.fe2508",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "1ba0c822.802b88",
+        "type": "ui_group",
+        "z": "",
+        "name": "Anzucht Außen",
+        "tab": "c1744440.fe2508",
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
+        "id": "5032fe53.8132a",
+        "type": "ui_group",
+        "z": "",
+        "name": "Verlauf",
+        "tab": "c1744440.fe2508",
+        "disp": true,
+        "width": 6,
+        "collapse": true
+    },
+    {
+        "id": "aaee1768.2976e8",
+        "type": "ui_group",
+        "z": "",
+        "name": "Vergleich",
+        "tab": "c1744440.fe2508",
+        "disp": true,
+        "width": "6",
+        "collapse": true
+    },
+    {
         "id": "67be37b4.5b3ae8",
         "type": "serial out",
         "z": "ec00c513.cf79a8",
         "name": "",
         "serial": "b7042540.3face8",
-        "x": 790,
+        "x": 800,
         "y": 60,
         "wires": []
     },
@@ -394,8 +592,8 @@
         "links": [
             "9e877e7.5a6058"
         ],
-        "x": 855,
-        "y": 260,
+        "x": 915,
+        "y": 200,
         "wires": []
     },
     {
@@ -701,7 +899,7 @@
         "y": 60,
         "wires": [
             [
-                "32a4a7ad.e32598"
+                "1afc9416.ac37ac"
             ]
         ]
     },
@@ -724,7 +922,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 590,
+        "x": 650,
         "y": 80,
         "wires": [
             []
@@ -746,7 +944,7 @@
         "y": 100,
         "wires": [
             [
-                "32a4a7ad.e32598"
+                "1afc9416.ac37ac"
             ]
         ]
     },
@@ -855,8 +1053,8 @@
         "links": [
             "9e877e7.5a6058"
         ],
-        "x": 895,
-        "y": 100,
+        "x": 835,
+        "y": 140,
         "wires": []
     },
     {
@@ -878,11 +1076,12 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 590,
-        "y": 360,
+        "x": 610,
+        "y": 300,
         "wires": [
             [
-                "238fe4eb.7f9fcc"
+                "238fe4eb.7f9fcc",
+                "1451d838.1ccab8"
             ]
         ]
     },
@@ -894,8 +1093,8 @@
         "func": "var keyValue=msg.payload.split(\":\");\nvar pos=parseInt(keyValue[1]);\n\nmsg.payload=pos;\n\nreturn [msg,null];",
         "outputs": 1,
         "noerr": 0,
-        "x": 320,
-        "y": 360,
+        "x": 340,
+        "y": 300,
         "wires": [
             [
                 "8a5e2673.4dca28"
@@ -934,8 +1133,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 4,
-        "x": 90,
-        "y": 340,
+        "x": 130,
+        "y": 280,
         "wires": [
             [
                 "19cc3fcf.9f49"
@@ -969,17 +1168,17 @@
         "label": "Aktuelle C Stellung",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 890,
-        "y": 360,
+        "x": 910,
+        "y": 300,
         "wires": []
     },
     {
         "id": "68bd7b49.9dcfe4",
         "type": "ui_button",
         "z": "544611f1.560ba",
-        "name": "ROT_AZI R 1",
+        "name": "ROT_AZI R 7",
         "group": "12344724.fb8679",
-        "order": 0,
+        "order": 4,
         "width": "0",
         "height": "0",
         "passthru": true,
@@ -988,7 +1187,7 @@
         "color": "",
         "bgcolor": "",
         "icon": "",
-        "payload": "ROT_AZI R 1",
+        "payload": "ROT_AZI R 7",
         "payloadType": "str",
         "topic": "",
         "x": 700,
@@ -1005,7 +1204,7 @@
         "z": "544611f1.560ba",
         "name": "ROT_AZI L 1",
         "group": "12344724.fb8679",
-        "order": 1,
+        "order": 2,
         "width": 0,
         "height": 0,
         "passthru": true,
@@ -1014,7 +1213,7 @@
         "color": "",
         "bgcolor": "",
         "icon": "",
-        "payload": "ROT_AZI L 1",
+        "payload": "ROT_AZI L 7",
         "payloadType": "str",
         "topic": "",
         "x": 690,
@@ -1048,8 +1247,8 @@
         "offvalueType": "bool",
         "officon": "",
         "offcolor": "",
-        "x": 160,
-        "y": 140,
+        "x": 420,
+        "y": 80,
         "wires": [
             [
                 "32a4a7ad.e32598"
@@ -1142,7 +1341,7 @@
         "z": "544611f1.560ba",
         "name": "",
         "group": "12344724.fb8679",
-        "order": 2,
+        "order": 3,
         "width": 0,
         "height": 0,
         "passthru": true,
@@ -1187,7 +1386,7 @@
         "type": "ui_template",
         "z": "544611f1.560ba",
         "group": "9e941b5c.2af388",
-        "name": "Test",
+        "name": "Form",
         "order": 3,
         "width": "6",
         "height": "3",
@@ -1196,7 +1395,7 @@
         "fwdInMessages": false,
         "templateScope": "local",
         "x": 130,
-        "y": 140,
+        "y": 240,
         "wires": [
             [
                 "7b0e5a73.645744"
@@ -1255,8 +1454,8 @@
         "label": "Echo (Hw)",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 870,
-        "y": 400,
+        "x": 890,
+        "y": 380,
         "wires": []
     },
     {
@@ -1267,8 +1466,8 @@
         "func": "var keyValue=msg.payload.split(\":\");\nvar lastCommand=keyValue[1];\n\nmsg.payload=lastCommand;\n\nreturn {'payload': lastCommand};\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 320,
-        "y": 400,
+        "x": 340,
+        "y": 380,
         "wires": [
             [
                 "456d6616.d76ba8"
@@ -1281,8 +1480,8 @@
         "z": "ec00c513.cf79a8",
         "name": "Recive rawdata from hardware",
         "links": [],
-        "x": 720,
-        "y": 240,
+        "x": 415,
+        "y": 200,
         "wires": []
     },
     {
@@ -1293,8 +1492,8 @@
         "func": "var keyValue=msg.payload.split(\":\");\nvar lastCommand=keyValue[1];\n\nmsg.payload=lastCommand;\n\nreturn {'payload': lastCommand};\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 320,
-        "y": 480,
+        "x": 340,
+        "y": 540,
         "wires": [
             [
                 "1de8c201.2c5ade"
@@ -1313,8 +1512,8 @@
         "label": "Rückmeldung",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 880,
-        "y": 480,
+        "x": 900,
+        "y": 540,
         "wires": []
     },
     {
@@ -1336,11 +1535,12 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 520,
-        "y": 400,
+        "x": 540,
+        "y": 380,
         "wires": [
             [
-                "485fe82e.29d2a8"
+                "485fe82e.29d2a8",
+                "1e590a96.633675"
             ]
         ]
     },
@@ -1363,11 +1563,12 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 530,
-        "y": 480,
+        "x": 550,
+        "y": 540,
         "wires": [
             [
-                "1fd5fa9a.171a65"
+                "1fd5fa9a.171a65",
+                "69b59af1.96c7a4"
             ]
         ]
     },
@@ -1379,8 +1580,8 @@
         "func": "var keyValue=msg.payload.split(\":\");\nvar pos=parseInt(keyValue[1]);\n\nmsg.payload=pos;\n\nreturn [msg,null];",
         "outputs": 1,
         "noerr": 0,
-        "x": 320,
-        "y": 440,
+        "x": 340,
+        "y": 460,
         "wires": [
             [
                 "d023a49f.0a8348"
@@ -1406,11 +1607,12 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 580,
-        "y": 440,
+        "x": 600,
+        "y": 460,
         "wires": [
             [
-                "fe6d34c3.244708"
+                "fe6d34c3.244708",
+                "51cfeeef.5daa1"
             ]
         ]
     },
@@ -1426,8 +1628,8 @@
         "label": "Position Azi.",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 870,
-        "y": 440,
+        "x": 890,
+        "y": 460,
         "wires": []
     },
     {
@@ -1477,7 +1679,7 @@
         "id": "1325d77d.6448e9",
         "type": "link in",
         "z": "51c94715.44a8e8",
-        "name": "User_rig_set_frequency",
+        "name": "cust_rig_get_frequency",
         "links": [],
         "x": 655,
         "y": 40,
@@ -1493,7 +1695,7 @@
         "z": "51c94715.44a8e8",
         "name": "Customizing me",
         "info": "",
-        "x": 550,
+        "x": 540,
         "y": 40,
         "wires": []
     },
@@ -1506,22 +1708,6 @@
         "x": 210,
         "y": 200,
         "wires": []
-    },
-    {
-        "id": "95f0955c.624ba8",
-        "type": "function",
-        "z": "b4e6292.cbfffd8",
-        "name": "set filename",
-        "func": "msg.filename=msg.payload;\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 430,
-        "y": 100,
-        "wires": [
-            [
-                "c473009a.72738"
-            ]
-        ]
     },
     {
         "id": "c473009a.72738",
@@ -1703,17 +1889,17 @@
         "z": "cfe9d18f.af40a",
         "name": "",
         "topic": "",
-        "payload": "/home/dk9mbs/freq.txt",
-        "payloadType": "str",
+        "payload": "",
+        "payloadType": "date",
         "repeat": "",
         "crontab": "",
         "once": true,
         "onceDelay": 0.1,
-        "x": 180,
+        "x": 150,
         "y": 240,
         "wires": [
             [
-                "f29e7977.b2d2d8"
+                "2efbe8bf.890f68"
             ]
         ]
     },
@@ -1722,12 +1908,11 @@
         "type": "subflow:b4e6292.cbfffd8",
         "z": "cfe9d18f.af40a",
         "name": "",
-        "x": 530,
-        "y": 240,
+        "env": [],
+        "x": 380,
+        "y": 480,
         "wires": [
-            [
-                "f5b38901.4cf548"
-            ]
+            []
         ]
     },
     {
@@ -1748,20 +1933,6 @@
         "info": "",
         "x": 210,
         "y": 20,
-        "wires": []
-    },
-    {
-        "id": "f5b38901.4cf548",
-        "type": "debug",
-        "z": "cfe9d18f.af40a",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "x": 820,
-        "y": 240,
         "wires": []
     },
     {
@@ -1820,66 +1991,11 @@
         ]
     },
     {
-        "id": "bb2016aa.2b5778",
-        "type": "ui_dropdown",
-        "z": "544611f1.560ba",
-        "name": "",
-        "label": "",
-        "tooltip": "",
-        "place": "Select option",
-        "group": "9e941b5c.2af388",
-        "order": 1,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
-        "options": [
-            {
-                "label": "40m FT8",
-                "value": "{\"frequency\": 7074, \"unit\":\"khz\"}",
-                "type": "str"
-            },
-            {
-                "label": "20m FT8",
-                "value": "{\"frequency\": 14074, \"unit\":\"khz\"}",
-                "type": "str"
-            },
-            {
-                "label": "20m QRP",
-                "value": "{\"frequency\": 14350, \"unit\":\"khz\"}",
-                "type": "str"
-            }
-        ],
-        "payload": "",
-        "topic": "",
-        "x": 100,
-        "y": 520,
-        "wires": [
-            [
-                "93b7005f.4744f",
-                "5a3c26cf.b53198"
-            ]
-        ]
-    },
-    {
-        "id": "93b7005f.4744f",
-        "type": "debug",
-        "z": "544611f1.560ba",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "x": 360,
-        "y": 680,
-        "wires": []
-    },
-    {
         "id": "30d84709.ddaaa8",
         "type": "debug",
         "z": "544611f1.560ba",
         "name": "",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1889,19 +2005,1056 @@
         "wires": []
     },
     {
-        "id": "5a3c26cf.b53198",
-        "type": "json",
+        "id": "704084f1.83643c",
+        "type": "ui_form",
         "z": "544611f1.560ba",
+        "name": "",
+        "label": "Add new frequency",
+        "group": "9e941b5c.2af388",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "options": [
+            {
+                "label": "Frequency (KHz)",
+                "value": "frequency",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Steps",
+                "value": "steps",
+                "type": "number",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "frequency": "",
+            "steps": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "cancel",
+        "topic": "",
+        "x": 550,
+        "y": 680,
+        "wires": [
+            [
+                "1f71b636.0f478a"
+            ]
+        ]
+    },
+    {
+        "id": "4541bc31.fd2054",
+        "type": "function",
+        "z": "544611f1.560ba",
+        "name": "",
+        "func": "var step=global.get(\"dk9mbs.magloop.cap_pos\");\nreturn {\"payload\": {\"frequency\": null,\"steps\":step}};",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 310,
+        "y": 680,
+        "wires": [
+            [
+                "704084f1.83643c"
+            ]
+        ]
+    },
+    {
+        "id": "1451d838.1ccab8",
+        "type": "link out",
+        "z": "ec00c513.cf79a8",
+        "name": "cust_after_set_current_cap_pos",
+        "links": [
+            "b608b3fc.fd965",
+            "c8cd7a5e.442078"
+        ],
+        "x": 835,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "5a8fb931.cd0a68",
+        "type": "comment",
+        "z": "ec00c513.cf79a8",
+        "name": "Customizing",
+        "info": "",
+        "x": 930,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "c8cd7a5e.442078",
+        "type": "link in",
+        "z": "544611f1.560ba",
+        "name": "",
+        "links": [
+            "1451d838.1ccab8"
+        ],
+        "x": 175,
+        "y": 680,
+        "wires": [
+            [
+                "4541bc31.fd2054"
+            ]
+        ]
+    },
+    {
+        "id": "e597410e.dccfe",
+        "type": "csv",
+        "z": "544611f1.560ba",
+        "name": "",
+        "sep": ";",
+        "hdrin": "",
+        "hdrout": "",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "steps,frequency",
+        "skip": "0",
+        "strings": true,
+        "x": 570,
+        "y": 800,
+        "wires": [
+            [
+                "dd68935e.db11b"
+            ]
+        ]
+    },
+    {
+        "id": "dd68935e.db11b",
+        "type": "file",
+        "z": "544611f1.560ba",
+        "name": "",
+        "filename": "/tmp/test.txt",
+        "appendNewline": false,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 570,
+        "y": 960,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1f71b636.0f478a",
+        "type": "change",
+        "z": "544611f1.560ba",
+        "name": "KHz2Hz",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.frequency",
+                "pt": "msg",
+                "to": "(payload.frequency)*1000",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 560,
+        "y": 740,
+        "wires": [
+            [
+                "e597410e.dccfe"
+            ]
+        ]
+    },
+    {
+        "id": "51ac21b0.d24d8",
+        "type": "comment",
+        "z": "544611f1.560ba",
+        "name": "Formulardaten zurücksetzen",
+        "info": "Mit cust Event",
+        "x": 270,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "7da4cd07.174de4",
+        "type": "comment",
+        "z": "544611f1.560ba",
+        "name": "Convert KHz to Hz",
+        "info": "Konvertierung von KHz in Hz",
+        "x": 760,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "15d46e02.17eef2",
+        "type": "function",
+        "z": "75c7db31.d3a664",
+        "name": "Edit or add a step",
+        "func": "var lines=msg.payload.split(\"\\n\");\nvar newValueStep=msg.mapping.steps;\nvar newValue=msg.mapping.frequency.frequency;\nvar tmp=\"\"\nfor (var x in lines) {\n    var line=lines[x];\n    var step=line.split(\";\")[0];\n    var freq=line.split(\";\")[1];\n\n    if(step==newValueStep){\n        lines[x]=newValueStep+\";\"+newValue;\n    }\n    if(tmp!==\"\") tmp+=\"\\n\";\n    tmp+=lines[x];\n}\nreturn {\"payload\": tmp};",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 120,
+        "wires": [
+            [
+                "c32643ab.084e2"
+            ]
+        ]
+    },
+    {
+        "id": "ff5daf8d.4ecba",
+        "type": "change",
+        "z": "75c7db31.d3a664",
+        "name": "Get the definition",
+        "rules": [
+            {
+                "t": "set",
+                "p": "mapping",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "dk9mbs.magloop.capacitor",
+                "tot": "global"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 350,
+        "y": 40,
+        "wires": [
+            [
+                "15d46e02.17eef2"
+            ]
+        ]
+    },
+    {
+        "id": "2efbe8bf.890f68",
+        "type": "change",
+        "z": "cfe9d18f.af40a",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "dk9mbs.magloop.mapfile",
+                "pt": "global",
+                "to": "/home/dk9mbs/freq.txt",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 370,
+        "y": 320,
+        "wires": [
+            [
+                "3c8ae6ac.ba3b0a"
+            ]
+        ]
+    },
+    {
+        "id": "3c8ae6ac.ba3b0a",
+        "type": "change",
+        "z": "cfe9d18f.af40a",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "filename",
+                "pt": "msg",
+                "to": "dk9mbs.magloop.mapfile",
+                "tot": "global"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 370,
+        "y": 400,
+        "wires": [
+            [
+                "f29e7977.b2d2d8"
+            ]
+        ]
+    },
+    {
+        "id": "9f066770.27eb18",
+        "type": "comment",
+        "z": "b4e6292.cbfffd8",
+        "name": "msg.filename",
+        "info": "",
+        "x": 110,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "cd65441e.433928",
+        "type": "file",
+        "z": "75c7db31.d3a664",
+        "name": "",
+        "filename": "",
+        "appendNewline": false,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 350,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c32643ab.084e2",
+        "type": "change",
+        "z": "75c7db31.d3a664",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "filename",
+                "pt": "msg",
+                "to": "dk9mbs.magloop.mapfile",
+                "tot": "global"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 350,
+        "y": 200,
+        "wires": [
+            [
+                "cd65441e.433928"
+            ]
+        ],
+        "info": "dk9mbs.magloop.mapfile"
+    },
+    {
+        "id": "6adebc04.b6d794",
+        "type": "inject",
+        "z": "cfe9d18f.af40a",
+        "name": "",
+        "topic": "",
+        "payload": "{\"steps\":404,\"frequency\":{\"frequency\":7076000, \"unit\":\"Hz\"}}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 140,
+        "y": 660,
+        "wires": [
+            [
+                "8c1a7d5a.db9b9"
+            ]
+        ]
+    },
+    {
+        "id": "8c1a7d5a.db9b9",
+        "type": "subflow:75c7db31.d3a664",
+        "z": "cfe9d18f.af40a",
+        "name": "",
+        "env": [],
+        "x": 560,
+        "y": 680,
+        "wires": [
+            [
+                "28b2b8d8.61cf08"
+            ]
+        ]
+    },
+    {
+        "id": "28b2b8d8.61cf08",
+        "type": "debug",
+        "z": "cfe9d18f.af40a",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 550,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "948d23bd.57c92",
+        "type": "comment",
+        "z": "cfe9d18f.af40a",
+        "name": "Kondensator Zuordnungstabelle erweitern",
+        "info": "",
+        "x": 220,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "e4bc59a3.572d28",
+        "type": "comment",
+        "z": "75c7db31.d3a664",
+        "name": "Get the filename from the global context",
+        "info": "",
+        "x": 650,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "951eeca6.159f6",
+        "type": "comment",
+        "z": "90d86bc3.3bda78",
+        "name": "",
+        "info": "",
+        "x": 310,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "df304312.a17e8",
+        "type": "function",
+        "z": "90d86bc3.3bda78",
+        "name": "",
+        "func": "var unit=msg.payload.unit;\nvar frequency=msg.payload.frequency;\n\nif (unit!==undefined) {\n    unit=unit.toUpperCase();\n} else {\n    unit=\"MHZ\";\n}\n\nif (unit=='KHZ') {\n    frequency=frequency*1000;\n    unit='Hz';\n} else if (unit == 'MHZ') {\n    frequencyfrequency*10^6;\n    unit='Hz';\n} else {\n    frequency=frequency;\n    unit='Hz';\n}\n\nvar unitHz={\"frequency\": frequency, \"unit\": \"Hz\"};\nvar unitKHz={\"frequency\": frequency/1000, \"unit\": \"KHz\"};\nvar unitMHz={\"frequency\": frequency/10^6, \"unit\": \"MHz\"};\n\nreturn [ {\"payload\": unitHz},\n{\"payload\": unitKHz},\n{\"payload\": unitMHz} ];\n\n",
+        "outputs": 3,
+        "noerr": 0,
+        "x": 430,
+        "y": 380,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "2fbdc108.916c5e",
+        "type": "inject",
+        "z": "cfe9d18f.af40a",
+        "name": "",
+        "topic": "",
+        "payload": "{\"frequency\": 7070, \"unit\": \"KHz\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 140,
+        "y": 880,
+        "wires": [
+            [
+                "cc233789.1e9b48"
+            ]
+        ]
+    },
+    {
+        "id": "cc233789.1e9b48",
+        "type": "subflow:90d86bc3.3bda78",
+        "z": "cfe9d18f.af40a",
+        "name": "",
+        "x": 400,
+        "y": 880,
+        "wires": [
+            [
+                "663e770b.dba278"
+            ],
+            [
+                "663e770b.dba278"
+            ],
+            [
+                "663e770b.dba278"
+            ]
+        ]
+    },
+    {
+        "id": "663e770b.dba278",
+        "type": "debug",
+        "z": "cfe9d18f.af40a",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 750,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "58938e69.db69",
+        "type": "mosca in",
+        "z": "170dd139.49cf4f",
+        "mqtt_port": 1883,
+        "mqtt_ws_port": 8080,
+        "name": "",
+        "username": "",
+        "password": "",
+        "dburl": "",
+        "x": 110,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "45e9a6d4.f69638",
+        "type": "mqtt in",
+        "z": "170dd139.49cf4f",
+        "name": "",
+        "topic": "temp/sensor",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "f0731d1f.b9dff",
+        "x": 90,
+        "y": 220,
+        "wires": [
+            [
+                "798e1173.16216"
+            ]
+        ]
+    },
+    {
+        "id": "ac91ff40.3ad5c",
+        "type": "function",
+        "z": "170dd139.49cf4f",
+        "name": "",
+        "func": "msg.temp=msg.payload.temp;\nmsg.address=msg.payload.address;\nmsg.payload=msg.temp;\n\nif (msg.address==\"28AA1FEF4F1401AA\") {\n    msg.topic=\"Box1\";\n    return [msg,null,null,null];\n} else if (msg.address==\"28AA80E44F1401E6\") {\n    msg.topic=\"Box2\";\n    return [null,msg,null,null];\n} else if (msg.address==\"28AA13DA4F140142\") {\n    msg.topic=\"Box3\";\n    return [null,null,msg,null];\n} else if (msg.address==\"28AA3FD24F140187\") {\n    msg.topic=\"Aussen\";\n    return [null,null,null,msg];\n}\n\n",
+        "outputs": 4,
+        "noerr": 0,
+        "x": 450,
+        "y": 220,
+        "wires": [
+            [
+                "d6952e4f.aa42f",
+                "997d739b.baeb6",
+                "774be197.cf949",
+                "e3bd7896.fea378"
+            ],
+            [
+                "ecf8698e.628718",
+                "997d739b.baeb6",
+                "774be197.cf949",
+                "e3bd7896.fea378"
+            ],
+            [
+                "6bc0374b.d5c258",
+                "774be197.cf949",
+                "997d739b.baeb6",
+                "e3bd7896.fea378"
+            ],
+            [
+                "58765e0e.280b2",
+                "997d739b.baeb6",
+                "774be197.cf949",
+                "e3bd7896.fea378"
+            ]
+        ],
+        "outputLabels": [
+            "Box 1",
+            "Box 2",
+            "Box 3",
+            "Außentemperatur"
+        ]
+    },
+    {
+        "id": "798e1173.16216",
+        "type": "json",
+        "z": "170dd139.49cf4f",
         "name": "",
         "property": "payload",
         "action": "",
         "pretty": false,
-        "x": 260,
-        "y": 500,
+        "x": 280,
+        "y": 220,
         "wires": [
             [
-                "3d8f684d.5f3828"
+                "ac91ff40.3ad5c"
             ]
+        ]
+    },
+    {
+        "id": "6bc0374b.d5c258",
+        "type": "ui_gauge",
+        "z": "170dd139.49cf4f",
+        "name": "",
+        "group": "2f3b7e91.dba462",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperatur",
+        "label": "",
+        "format": "{{temp}} C°",
+        "min": 0,
+        "max": "35",
+        "colors": [
+            "#ff8080",
+            "#80ff80",
+            "#ff8080"
+        ],
+        "seg1": "19",
+        "seg2": "23",
+        "x": 710,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "fb4a5872.5f6e78",
+        "type": "file",
+        "z": "170dd139.49cf4f",
+        "name": "Logfile",
+        "filename": "/home/dk9mbs/anzucht_temp.txt",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 870,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "774be197.cf949",
+        "type": "function",
+        "z": "170dd139.49cf4f",
+        "name": "",
+        "func": "var d = new Date();\nvar options = { timeZone: 'UTC', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute:'2-digit'};\nvar resultDate = d.toLocaleDateString('de-DE', options);\n\nmsg.payload=resultDate+\";\"+msg.topic+\";\"+msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 690,
+        "y": 60,
+        "wires": [
+            [
+                "fb4a5872.5f6e78"
+            ]
+        ]
+    },
+    {
+        "id": "38718a77.7d1496",
+        "type": "comment",
+        "z": "51c94715.44a8e8",
+        "name": "No Mapping found",
+        "info": "",
+        "x": 730,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "f2011a2d.711ff8",
+        "type": "comment",
+        "z": "51c94715.44a8e8",
+        "name": "Mappong found",
+        "info": "",
+        "x": 690,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "d6952e4f.aa42f",
+        "type": "ui_gauge",
+        "z": "170dd139.49cf4f",
+        "name": "",
+        "group": "1cca3cdc.6af163",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperatur",
+        "label": "",
+        "format": "{{temp}} C°",
+        "min": 0,
+        "max": "35",
+        "colors": [
+            "#ff8080",
+            "#80ff80",
+            "#ff8080"
+        ],
+        "seg1": "19",
+        "seg2": "23",
+        "x": 710,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "ecf8698e.628718",
+        "type": "ui_gauge",
+        "z": "170dd139.49cf4f",
+        "name": "",
+        "group": "1bba4ec8.8ccb11",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperatur",
+        "label": "",
+        "format": "{{temp}} C°",
+        "min": 0,
+        "max": "35",
+        "colors": [
+            "#ff8080",
+            "#80ff80",
+            "#ff8080"
+        ],
+        "seg1": "19",
+        "seg2": "23",
+        "x": 710,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "58765e0e.280b2",
+        "type": "ui_gauge",
+        "z": "170dd139.49cf4f",
+        "name": "",
+        "group": "1ba0c822.802b88",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperatur",
+        "label": "",
+        "format": "{{temp}} C°",
+        "min": 0,
+        "max": "35",
+        "colors": [
+            "#ff8080",
+            "#80ff80",
+            "#ff8080"
+        ],
+        "seg1": "19",
+        "seg2": "22",
+        "x": 710,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "997d739b.baeb6",
+        "type": "ui_chart",
+        "z": "170dd139.49cf4f",
+        "name": "",
+        "group": "5032fe53.8132a",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "Temperatur Verlauf",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "outputs": 1,
+        "x": 730,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f9dd2a53.400618",
+        "type": "comment",
+        "z": "170dd139.49cf4f",
+        "name": "Logging und Verlauf",
+        "info": "",
+        "x": 730,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "e52de1b9.e9df5",
+        "type": "comment",
+        "z": "170dd139.49cf4f",
+        "name": "Aktuelle Werte",
+        "info": "",
+        "x": 720,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "879b1e31.4bab9",
+        "type": "comment",
+        "z": "170dd139.49cf4f",
+        "name": "Temperatur Sensoren",
+        "info": "",
+        "x": 120,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "71830fe8.62d93",
+        "type": "comment",
+        "z": "544611f1.560ba",
+        "name": "edit or add step frequency mapping",
+        "info": "",
+        "x": 170,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "65d90b5f.1439e4",
+        "type": "comment",
+        "z": "544611f1.560ba",
+        "name": "show current c pos graphical",
+        "info": "",
+        "x": 160,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "4f5387d1.a20f88",
+        "type": "ui_gauge",
+        "z": "544611f1.560ba",
+        "name": "gauge_c",
+        "group": "9e941b5c.2af388",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Steps",
+        "label": "steps",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "8500",
+        "colors": [
+            "#00b500",
+            "#00b500",
+            "#00b500"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 500,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "b608b3fc.fd965",
+        "type": "link in",
+        "z": "544611f1.560ba",
+        "name": "",
+        "links": [
+            "1451d838.1ccab8"
+        ],
+        "x": 160,
+        "y": 1120,
+        "wires": [
+            [
+                "4f5387d1.a20f88"
+            ]
+        ]
+    },
+    {
+        "id": "69b59af1.96c7a4",
+        "type": "link out",
+        "z": "ec00c513.cf79a8",
+        "name": "cust_after_set_last_cmd",
+        "links": [],
+        "x": 835,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "51cfeeef.5daa1",
+        "type": "link out",
+        "z": "ec00c513.cf79a8",
+        "name": "cust_after_set_current_rotor_azi_pos",
+        "links": [],
+        "x": 835,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "1e590a96.633675",
+        "type": "link out",
+        "z": "ec00c513.cf79a8",
+        "name": "cust_after_set_echo",
+        "links": [],
+        "x": 835,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "fa175e3d.502fd",
+        "type": "comment",
+        "z": "ec00c513.cf79a8",
+        "name": "Customizing",
+        "info": "",
+        "x": 930,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "5e702141.3cf58",
+        "type": "comment",
+        "z": "ec00c513.cf79a8",
+        "name": "Customizing",
+        "info": "",
+        "x": 930,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "8187ae4c.3f7e7",
+        "type": "comment",
+        "z": "ec00c513.cf79a8",
+        "name": "Customizing",
+        "info": "",
+        "x": 930,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "6bc57afe.d879f4",
+        "type": "comment",
+        "z": "544611f1.560ba",
+        "name": "show current azi. rotor pos graphical",
+        "info": "",
+        "x": 160,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "beb983d2.dd4e",
+        "type": "link in",
+        "z": "544611f1.560ba",
+        "name": "",
+        "links": [],
+        "x": 175,
+        "y": 1280,
+        "wires": [
+            [
+                "63139001.35434"
+            ]
+        ]
+    },
+    {
+        "id": "63139001.35434",
+        "type": "ui_gauge",
+        "z": "544611f1.560ba",
+        "name": "gauge_azi",
+        "group": "12344724.fb8679",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "compass",
+        "title": "Azi. Pos",
+        "label": "degrees",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "360",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 510,
+        "y": 1280,
+        "wires": []
+    },
+    {
+        "id": "4c2effd.452a6",
+        "type": "udp in",
+        "z": "170dd139.49cf4f",
+        "name": "",
+        "iface": "",
+        "port": "2115",
+        "ipv": "udp4",
+        "multicast": "false",
+        "group": "192.168.2.255",
+        "datatype": "utf8",
+        "x": 80,
+        "y": 360,
+        "wires": [
+            [
+                "e38f9b2c.014e78"
+            ]
+        ]
+    },
+    {
+        "id": "e38f9b2c.014e78",
+        "type": "debug",
+        "z": "170dd139.49cf4f",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 130,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "e3bd7896.fea378",
+        "type": "ui_chart",
+        "z": "170dd139.49cf4f",
+        "name": "",
+        "group": "aaee1768.2976e8",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "label": "chart",
+        "chartType": "bar",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "outputs": 1,
+        "x": 690,
+        "y": 140,
+        "wires": [
+            []
         ]
     }
 ]

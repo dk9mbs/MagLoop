@@ -18,6 +18,7 @@ int cap_calSteps = 100;
 
 // AZIMUT ROTOR (horizontal)
 int rot_azi_steps_rotate_360 = 200;
+int rot_aziCurrentPos=0;
 
 //String cmd;
 
@@ -70,6 +71,10 @@ void loop()
 
       if (commandName == "ROT_AZI_MZ") {
         result=commandRotorAziMz(cmd);
+      }
+      
+      if (commandName == "ROT_AZI_MAX") {
+        result=commandRotorAziMax(cmd);
       }
 
       if (commandName=="CAP_MAX") {
@@ -144,6 +149,22 @@ String commandRotorAziMz(String cmd) {
 
   return "OK";
 }
+
+String commandRotorAziMax(String cmd) {
+  //if (digitalRead(ROT_AZI_LIMIT_SWITCH) == HIGH) moveRotorStepperAzi("L", ROT_STEPS_AFTER_LIMIT,0);
+  int count=0;
+  
+  while (digitalRead(ROT_AZI_LIMIT_SWITCH) == LOW) {
+    moveRotorStepperAzi("R", 1,1);
+    count++;
+    Serial.println("ROT_AZI_POS:"+count);
+  }
+  moveRotorStepperAzi("L", ROT_STEPS_AFTER_LIMIT,0);
+
+  return "OK";
+}
+
+
 
 String commandCapCal(String cmd) {
   moveCapStepper(cap_calSteps * -1, CAP_MOTOR_RPM);
