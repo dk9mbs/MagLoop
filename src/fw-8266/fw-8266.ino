@@ -12,7 +12,7 @@
 #include <ESP8266HTTPClient.h>
 
 
-#define SETUPPIN 5 
+#define SETUPPIN D1 //5 
 #define CAP_MOTOR_RPM 20
 #define ROT_AZI_STEP 2
 #define ROT_AZI_DIR 3
@@ -21,9 +21,15 @@
 #define ROT_ELE_LIMIT_SWITCH D3
 #define ROT_STEPS_AFTER_LIMIT 1
 
+#define C_STEPPER_PIN1 D5
+#define C_STEPPER_PIN2 D6
+#define C_STEPPER_PIN3 D7
+#define C_STEPPER_PIN4 D8
+
+
 WiFiClient espClient;
 ESP8266WebServer httpServer(80);
-CheapStepper stepper (D5,D6,D7,D8); 
+CheapStepper stepper (C_STEPPER_PIN1,C_STEPPER_PIN2,C_STEPPER_PIN3,C_STEPPER_PIN4); 
 HTTPClient http;
 
 boolean runSetup=false;
@@ -60,28 +66,31 @@ void setup()
   } else {
     setupHttpAdmin();
     setupWifiSTA(readConfigValue("ssid").c_str(), readConfigValue("password").c_str(), readConfigValue("mac").c_str());
+
+  
+    pinMode(ROT_AZI_STEP, OUTPUT);
+    pinMode(ROT_AZI_DIR, OUTPUT);
+    pinMode(ROT_AZI_ENABLED, OUTPUT);
+    pinMode(ROT_AZI_LIMIT_SWITCH,INPUT_PULLUP);
+    pinMode(ROT_ELE_LIMIT_SWITCH,INPUT_PULLUP);
+    
+    digitalWrite(ROT_AZI_STEP, HIGH);
+    digitalWrite(ROT_AZI_DIR, LOW);
+    digitalWrite(ROT_AZI_ENABLED, HIGH);
+    
+    Serial.println("OK -999");
+    delay(1000);
+    
+    // Invert beachten!!!
+    moveCapStepper(cap_maxPos, CAP_MOTOR_RPM);
+    Serial.println("CAP_POS:"+String(cap_currentPos));
+    moveCapStepper(cap_maxPos*-1, CAP_MOTOR_RPM);
+    Serial.println("CAP_POS:"+String(cap_currentPos));
+    //commandRotorAziMz("");
+  
   } // setup 
 
 
-  pinMode(ROT_AZI_STEP, OUTPUT);
-  pinMode(ROT_AZI_DIR, OUTPUT);
-  pinMode(ROT_AZI_ENABLED, OUTPUT);
-  pinMode(ROT_AZI_LIMIT_SWITCH,INPUT_PULLUP);
-  pinMode(ROT_ELE_LIMIT_SWITCH,INPUT_PULLUP);
-  
-  digitalWrite(ROT_AZI_STEP, HIGH);
-  digitalWrite(ROT_AZI_DIR, LOW);
-  digitalWrite(ROT_AZI_ENABLED, HIGH);
-
-  Serial.println("OK -999");
-  delay(1000);
-
-  // Invert beachten!!!
-  moveCapStepper(cap_maxPos, CAP_MOTOR_RPM);
-  Serial.println("CAP_POS:"+String(cap_currentPos));
-  moveCapStepper(cap_maxPos*-1, CAP_MOTOR_RPM);
-  Serial.println("CAP_POS:"+String(cap_currentPos));
-  commandRotorAziMz("");
 }
 
 void loop()
@@ -275,12 +284,13 @@ void moveCapStepper(int steps, int rpm) {
 
   for (int s=0; s<steps; s++){
     stepper.step(moveClockwise);
+    delay(1);
   }
 
-  digitalWrite(8, LOW);
-  digitalWrite(9, LOW);
-  digitalWrite(10, LOW);
-  digitalWrite(11, LOW);
+  digitalWrite(C_STEPPER_PIN1, LOW);
+  digitalWrite(C_STEPPER_PIN2, LOW);
+  digitalWrite(C_STEPPER_PIN3, LOW);
+  digitalWrite(C_STEPPER_PIN4, LOW);
 
 }
 
