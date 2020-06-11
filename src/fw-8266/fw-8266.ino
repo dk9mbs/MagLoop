@@ -52,11 +52,11 @@ class CapStepper{
     void move(int steps, int rpm);
     void run();
   private:
-    CheapStepper _stepper;
+    CheapStepper _stepper();
 };
 
 void CapStepper::init(CheapStepper& stepper) {
-  CapStepper::_stepper=stepper;
+  
 }
 void CapStepper::run () {
   stepper.run();
@@ -64,7 +64,7 @@ void CapStepper::run () {
 void CapStepper::move(int steps, int rpm) {
   cap_currentPos += steps;
 
-  CapStepper::_stepper.setRpm(rpm);
+  stepper.setRpm(rpm);
   bool moveClockwise;
   if (steps < 0) {
     moveClockwise = false;
@@ -73,7 +73,7 @@ void CapStepper::move(int steps, int rpm) {
     moveClockwise = true;
   }
 
-  CapStepper::_stepper.newMove(moveClockwise, steps);
+  stepper.newMove(moveClockwise, steps);
   /*
   for (int s=0; s<steps; s++){
     stepper.step(moveClockwise);
@@ -93,7 +93,7 @@ CapStepper cap;
 void setup()
 {
 
-  //cap.init(stepper);
+  cap.init(stepper);
   
   Serial.begin(9600);
   Serial.println("Hallo");
@@ -148,7 +148,7 @@ void setup()
 void loop()
 {
   httpServer.handleClient(); 
-  //cap.run();
+  cap.run();
 }
 
 
@@ -388,7 +388,7 @@ void handleHttpApi() {
   String cmd=httpServer.arg("command");
   String steps=httpServer.arg("steps");
   Serial.println(cmd+' '+steps);
-  CapStepper cap;
+  //CapStepper cap;
   cap.move(steps.toInt(),20);
   delay(10);
   httpServer.send(200, "text/html", "api"); 
