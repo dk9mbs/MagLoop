@@ -32,6 +32,7 @@ ESP8266WebServer httpServer(80);
 CheapStepper stepper (C_STEPPER_PIN1,C_STEPPER_PIN2,C_STEPPER_PIN3,C_STEPPER_PIN4); 
 HTTPClient http;
 
+
 boolean runSetup=false;
 int state=0; // Status from Statemachine
 // Cap. stepper definition
@@ -44,12 +45,60 @@ int cap_calSteps = 100;
 const int rot_azi_steps_rotate_360 = 200;
 int rot_aziCurrentPos=0;
 
+class CapStepper{
+  public:
+    CapStepper(){};
+    void init(CheapStepper& stepper);    
+    void move(int steps, int rpm);
+    void run();
+  private:
+    CheapStepper _stepper;
+};
+
+void CapStepper::init(CheapStepper& stepper) {
+  CapStepper::_stepper=stepper;
+}
+void CapStepper::run () {
+  stepper.run();
+}
+void CapStepper::move(int steps, int rpm) {
+  cap_currentPos += steps;
+
+  CapStepper::_stepper.setRpm(rpm);
+  bool moveClockwise;
+  if (steps < 0) {
+    moveClockwise = false;
+    steps=steps*-1;
+  } else {
+    moveClockwise = true;
+  }
+
+  CapStepper::_stepper.newMove(moveClockwise, steps);
+  /*
+  for (int s=0; s<steps; s++){
+    stepper.step(moveClockwise);
+    delay(1);
+  }
+
+  digitalWrite(C_STEPPER_PIN1, LOW);
+  digitalWrite(C_STEPPER_PIN2, LOW);
+  digitalWrite(C_STEPPER_PIN3, LOW);
+  digitalWrite(C_STEPPER_PIN4, LOW);
+  */
+}
+
+CapStepper cap;
+
+
 void setup()
 {
 
-
+  //cap.init(stepper);
+  
   Serial.begin(9600);
-
+  Serial.println("Hallo");
+  
+  
   setupIo();
   setupFileSystem();
 
@@ -59,6 +108,8 @@ void setup()
   Serial.println(digitalRead(SETUPPIN));
   Serial.print("adminpwd: ");
   Serial.println(readConfigValue("adminpwd"));
+
+
   
   if(runSetup) {
     setupWifiAP();
@@ -82,13 +133,14 @@ void setup()
     delay(1000);
     
     // Invert beachten!!!
-    moveCapStepper(cap_maxPos, CAP_MOTOR_RPM);
-    Serial.println("CAP_POS:"+String(cap_currentPos));
-    moveCapStepper(cap_maxPos*-1, CAP_MOTOR_RPM);
-    Serial.println("CAP_POS:"+String(cap_currentPos));
+    //CapStepper cap;
+    //cap.move(cap_maxPos, CAP_MOTOR_RPM);
+    //Serial.println("CAP_POS:"+String(cap_currentPos));
+    //cap.move(cap_maxPos*-1, CAP_MOTOR_RPM);
+    //Serial.println("CAP_POS:"+String(cap_currentPos));
     //commandRotorAziMz("");
-  
-  } // setup 
+    
+  } 
 
 
 }
@@ -96,26 +148,7 @@ void setup()
 void loop()
 {
   httpServer.handleClient(); 
-  
-  String result = "ERR UNKNOWN";
-  static String cmd;
-  
-  if (Serial.available()) {
-    char in = Serial.read();
-
-    if (in == 13 || in == 10) {
-      Serial.println("ECHO:" + cmd);
-      result=command(cmd);
-      Serial.println("CAP_POS:"+String(cap_currentPos));
-      Serial.println("ROT_AZI_POS:0");
-      Serial.println("LAST_CMD:"+cmd);
-      Serial.println(result);
-      cmd = "";
-      return;
-    } else {
-      cmd += in;
-    }
-  }
+  //cap.run();
 }
 
 
@@ -222,7 +255,8 @@ String commandRotorAziMax(String cmd) {
 
 
 String commandCapCal(String cmd) {
-  moveCapStepper(cap_calSteps * -1, CAP_MOTOR_RPM);
+  CapStepper cap;
+  cap.move(cap_calSteps * -1, CAP_MOTOR_RPM);
   return "OK";
 }
 
@@ -243,7 +277,9 @@ String commandMoveCapAbsolute(String cmd, int pos) {
   if (steps + cap_currentPos < cap_minPos) steps = 0;
   if (steps + cap_currentPos > cap_maxPos) steps = cap_maxPos;
 
-  moveCapStepper(steps, CAP_MOTOR_RPM);
+  CapStepper cap;
+  cap.move(steps, CAP_MOTOR_RPM);
+  
   return "OK "+String(cap_currentPos);
 }
 
@@ -260,7 +296,8 @@ String commandCapMove(String cmd, int steps, String dir) {
     steps=steps*-1;
   }
 
-  moveCapStepper(steps, CAP_MOTOR_RPM);
+  CapStepper cap;
+  cap.move(steps, CAP_MOTOR_RPM);
   return "OK "+String(cap_currentPos);
 }
 
@@ -270,29 +307,7 @@ String commandCapMove(String cmd, int steps, String dir) {
  * Helper functions
  * 
  */
-void moveCapStepper(int steps, int rpm) {
-  cap_currentPos += steps;
-
-  stepper.setRpm(rpm);
-  bool moveClockwise;
-  if (steps < 0) {
-    moveClockwise = false;
-    steps=steps*-1;
-  } else {
-    moveClockwise = true;
-  }
-
-  for (int s=0; s<steps; s++){
-    stepper.step(moveClockwise);
-    delay(1);
-  }
-
-  digitalWrite(C_STEPPER_PIN1, LOW);
-  digitalWrite(C_STEPPER_PIN2, LOW);
-  digitalWrite(C_STEPPER_PIN3, LOW);
-  digitalWrite(C_STEPPER_PIN4, LOW);
-
-}
+ 
 
 
 void moveRotorStepperAzi(String dir, int steps , int readLimitSwitch) {
@@ -370,6 +385,12 @@ void setupHttpAdmin() {
 }
 
 void handleHttpApi() {
+  String cmd=httpServer.arg("command");
+  String steps=httpServer.arg("steps");
+  Serial.println(cmd+' '+steps);
+  CapStepper cap;
+  cap.move(steps.toInt(),20);
+  delay(10);
   httpServer.send(200, "text/html", "api"); 
 }
 
