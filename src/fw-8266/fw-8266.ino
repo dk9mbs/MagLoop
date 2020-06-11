@@ -1,7 +1,7 @@
 
 #ifdef ESP32
 #pragma message(THIS EXAMPLE IS FOR ESP8266 ONLY!)
-#err Select ESP8266 board.
+#error Select ESP8266 board.
 #endif
 
 #include <CheapStepper.h>
