@@ -47,24 +47,27 @@ int rot_aziCurrentPos=0;
 
 class CapStepper{
   public:
-    CapStepper(){};
+    CapStepper();
     void init(CheapStepper& stepper);    
     void move(int steps, int rpm);
     void run();
   private:
-    CheapStepper _stepper();
+    CheapStepper* _stepper;
 };
 
+CapStepper::CapStepper() {
+}
+
 void CapStepper::init(CheapStepper& stepper) {
-  
+  _stepper=&stepper;
 }
 void CapStepper::run () {
-  stepper.run();
+  _stepper->run();
 }
 void CapStepper::move(int steps, int rpm) {
   cap_currentPos += steps;
 
-  stepper.setRpm(rpm);
+  _stepper->setRpm(rpm);
   bool moveClockwise;
   if (steps < 0) {
     moveClockwise = false;
@@ -73,7 +76,7 @@ void CapStepper::move(int steps, int rpm) {
     moveClockwise = true;
   }
 
-  stepper.newMove(moveClockwise, steps);
+  _stepper->newMove(moveClockwise, steps);
   /*
   for (int s=0; s<steps; s++){
     stepper.step(moveClockwise);
