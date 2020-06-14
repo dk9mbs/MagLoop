@@ -30,16 +30,12 @@
 WiFiClient espClient;
 ESP8266WebServer httpServer(80);
 CheapStepper stepper (C_STEPPER_PIN1,C_STEPPER_PIN2,C_STEPPER_PIN3,C_STEPPER_PIN4); 
+
 HTTPClient http;
 
+enum cap_state {START,RUNNING};
 
 boolean runSetup=false;
-int state=0; // Status from Statemachine
-// Cap. stepper definition
-int cap_currentPos = 0;
-int cap_minPos = 0;
-int cap_maxPos = 8500;
-int cap_calSteps = 100;
 
 // AZIMUT ROTOR (horizontal)
 const int rot_azi_steps_rotate_360 = 200;
@@ -47,15 +43,34 @@ int rot_aziCurrentPos=0;
 
 class CapStepper{
   public:
+    static int _requestedPos;
+    int currentPos=0;
+    int minPos=0;
+    int maxPos=8500;
+    int calSteps=100;
     CapStepper();
     void init(CheapStepper& stepper);    
     void move(int steps, int rpm);
     void run();
+    void clearPins();
+    static int getRequestedPos();
+    static void setRequestedPos(int value);
   private:
     CheapStepper* _stepper;
 };
 
+int CapStepper::_requestedPos = -1;
+
 CapStepper::CapStepper() {
+
+}
+
+int CapStepper::getRequestedPos() {
+  return CapStepper::_requestedPos;
+}
+
+void CapStepper::setRequestedPos(int value) {
+  CapStepper::_requestedPos=value;
 }
 
 void CapStepper::init(CheapStepper& stepper) {
@@ -63,9 +78,13 @@ void CapStepper::init(CheapStepper& stepper) {
 }
 void CapStepper::run () {
   _stepper->run();
+  
+  if (_stepper->getStepsLeft()==0) {
+    clearPins();
+  }
 }
 void CapStepper::move(int steps, int rpm) {
-  cap_currentPos += steps;
+  currentPos += steps;
 
   _stepper->setRpm(rpm);
   bool moveClockwise;
@@ -77,17 +96,13 @@ void CapStepper::move(int steps, int rpm) {
   }
 
   _stepper->newMove(moveClockwise, steps);
-  /*
-  for (int s=0; s<steps; s++){
-    stepper.step(moveClockwise);
-    delay(1);
-  }
+}
 
-  digitalWrite(C_STEPPER_PIN1, LOW);
-  digitalWrite(C_STEPPER_PIN2, LOW);
-  digitalWrite(C_STEPPER_PIN3, LOW);
-  digitalWrite(C_STEPPER_PIN4, LOW);
-  */
+void CapStepper::clearPins() {
+    digitalWrite(C_STEPPER_PIN1, LOW);
+    digitalWrite(C_STEPPER_PIN2, LOW);
+    digitalWrite(C_STEPPER_PIN3, LOW);
+    digitalWrite(C_STEPPER_PIN4, LOW);
 }
 
 CapStepper cap;
@@ -95,12 +110,9 @@ CapStepper cap;
 
 void setup()
 {
-
   cap.init(stepper);
   
-  Serial.begin(9600);
-  Serial.println("Hallo");
-  
+  Serial.begin(115200);
   
   setupIo();
   setupFileSystem();
@@ -120,7 +132,6 @@ void setup()
   } else {
     setupHttpAdmin();
     setupWifiSTA(readConfigValue("ssid").c_str(), readConfigValue("password").c_str(), readConfigValue("mac").c_str());
-
   
     pinMode(ROT_AZI_STEP, OUTPUT);
     pinMode(ROT_AZI_DIR, OUTPUT);
@@ -132,210 +143,50 @@ void setup()
     digitalWrite(ROT_AZI_DIR, LOW);
     digitalWrite(ROT_AZI_ENABLED, HIGH);
     
-    Serial.println("OK -999");
+    Serial.println("Waiting for commands over http...");
     delay(1000);
     
     // Invert beachten!!!
-    //CapStepper cap;
     //cap.move(cap_maxPos, CAP_MOTOR_RPM);
-    //Serial.println("CAP_POS:"+String(cap_currentPos));
     //cap.move(cap_maxPos*-1, CAP_MOTOR_RPM);
-    //Serial.println("CAP_POS:"+String(cap_currentPos));
-    //commandRotorAziMz("");
     
   } 
-
-
 }
 
 void loop()
 {
   httpServer.handleClient(); 
   cap.run();
+  delay(1);
+  capStepperStateMaschine(cap);
+  
 }
 
+void capStepperStateMaschine(const CapStepper& stepper) {
+  enum {START, CHANGEREQUEST, INCREASECAP, DECREASECAP};
+  static int state=START;
 
-String command(String& cmd) {
-  String result = "ERR UNKNOWN";
-  String commandName = "";
-  commandName = getCommandValue(cmd, ' ', 0);
-  
-  if (commandName == "HELO") {
-    result="KI5HDH / DK9MBS MagLoop controller firmware V0.1\nOK";
-  }
-  
-  if (commandName == "ROT_AZI") {
-    result=commandRotorAzi(cmd);
-  }
-  
-  if (commandName == "ROT_AZI_MZ") {
-    result=commandRotorAziMz(cmd);
-  }
-  
-  if (commandName == "ROT_AZI_MAX") {
-    result=commandRotorAziMax(cmd);
-  }
-  
-  if (commandName=="CAP_MAX") {
-    result = commandMoveCapAbsolute(cmd, cap_minPos);
-  }
-  if (commandName=="CAP_MIN") {
-    result = commandMoveCapAbsolute(cmd, cap_maxPos);
-  }
-  if (commandName == "CAP_ABSOLUTE") {
-    int pos = getCommandValue(cmd, ' ', 1).toInt();
-    result = commandMoveCapAbsolute(cmd, pos);
-  }
-  
-  if (commandName == "CAP_DOWN") {
-    int steps = getCommandValue(cmd, ' ', 1).toInt();
-    result = commandCapMove(cmd,steps, "DOWN");
-  }
-  
-  if (commandName == "CAP_UP") {
-    int steps = getCommandValue(cmd, ' ', 1).toInt();
-    result = commandCapMove(cmd,steps, "UP");
-  }
-  
-  if (commandName == "SZ") {
-    result = commandSZ(cmd);
-  }
-  
-  if (commandName == "SP") {
-    result = commandSP(cmd);
-  }
-  
-  if (commandName == "CAL") {
-    result = commandCapCal(cmd);
-  }
-  cmd = "";
-
-  return result;
-}
-
-String commandRotorAzi(String cmd) {
-  String dir=getCommandValue(cmd, ' ', 1);
-  int steps=getCommandValue(cmd, ' ', 2).toInt();
-
-  moveRotorStepperAzi(dir, steps,1);
-
-   if(digitalRead(ROT_AZI_LIMIT_SWITCH)) {
-      if(dir=="L") {
-        moveRotorStepperAzi("R",ROT_STEPS_AFTER_LIMIT,0);
-      } else {
-        moveRotorStepperAzi("L",ROT_STEPS_AFTER_LIMIT,0);
+  int newPos=CapStepper::getRequestedPos();
+  //Serial.println(newPos);
+  switch (state) {
+    case START:
+      if(newPos!=-1){
+          cap.move(newPos,CAP_MOTOR_RPM);
+          Serial.println("Statemaschine is running...");
+          CapStepper::setRequestedPos(-1);
       }
-    }
-
-  return "OK";
-}
-
-String commandRotorAziMz(String cmd) {
-  //if (digitalRead(ROT_AZI_LIMIT_SWITCH) == HIGH) moveRotorStepperAzi("L", ROT_STEPS_AFTER_LIMIT,0);
+      break;
+    case CHANGEREQUEST:
+      break;
+  }
   
-  while (digitalRead(ROT_AZI_LIMIT_SWITCH) == LOW) {
-    moveRotorStepperAzi("L", 1,1);
-  }
-  moveRotorStepperAzi("R", ROT_STEPS_AFTER_LIMIT,0);
-
-  return "OK";
 }
-
-String commandRotorAziMax(String cmd) {
-  //if (digitalRead(ROT_AZI_LIMIT_SWITCH) == HIGH) moveRotorStepperAzi("L", ROT_STEPS_AFTER_LIMIT,0);
-  int count=0;
-  
-  while (digitalRead(ROT_AZI_LIMIT_SWITCH) == LOW) {
-    moveRotorStepperAzi("R", 1,1);
-    count++;
-    Serial.println("ROT_AZI_POS:"+count);
-  }
-  moveRotorStepperAzi("L", ROT_STEPS_AFTER_LIMIT,0);
-
-  return "OK";
-}
-
-
-
-String commandCapCal(String cmd) {
-  CapStepper cap;
-  cap.move(cap_calSteps * -1, CAP_MOTOR_RPM);
-  return "OK";
-}
-
-String commandSP(String cmd) {
-  return "OK " + String(cap_currentPos);
-}
-
-String commandSZ(String cmd) {
-  cap_currentPos = 0;
-  return "OK";
-}
-
-String commandMoveCapAbsolute(String cmd, int pos) {
-  int steps = 0;
-
-  steps = pos - cap_currentPos;
-
-  if (steps + cap_currentPos < cap_minPos) steps = 0;
-  if (steps + cap_currentPos > cap_maxPos) steps = cap_maxPos;
-
-  CapStepper cap;
-  cap.move(steps, CAP_MOTOR_RPM);
-  
-  return "OK "+String(cap_currentPos);
-}
-
-String commandCapMove(String cmd, int steps, String dir) {
-  if (dir == "DOWN" && cap_currentPos + steps > cap_maxPos) {
-    steps = cap_maxPos - cap_currentPos;
-  }
-
-  if (dir == "UP" && cap_currentPos - steps < cap_minPos) {
-    steps = cap_currentPos;
-  }
-
-  if (dir == "UP") {
-    steps=steps*-1;
-  }
-
-  CapStepper cap;
-  cap.move(steps, CAP_MOTOR_RPM);
-  return "OK "+String(cap_currentPos);
-}
-
 
 /*
  * 
  * Helper functions
  * 
  */
- 
-
-
-void moveRotorStepperAzi(String dir, int steps , int readLimitSwitch) {
-  if(dir=="R") {
-    digitalWrite(ROT_AZI_DIR, LOW);
-  } else {
-    digitalWrite(ROT_AZI_DIR, HIGH);
-  }
-  
-  digitalWrite(ROT_AZI_ENABLED, LOW);
-  for(int i = 0; i < rot_azi_steps_rotate_360*steps; i++) {
-    
-    if(digitalRead(ROT_AZI_LIMIT_SWITCH) == HIGH && readLimitSwitch==1){
-      delay(10);
-      break;
-    }
-    
-    digitalWrite(ROT_AZI_STEP, HIGH);
-    delay(1);
-    digitalWrite(ROT_AZI_STEP, LOW);
-    delay(1);
-  }
-  digitalWrite(ROT_AZI_ENABLED, HIGH);
-}
-
 
 /*
    getCommandValue
@@ -390,10 +241,11 @@ void setupHttpAdmin() {
 void handleHttpApi() {
   String cmd=httpServer.arg("command");
   String steps=httpServer.arg("steps");
+
+  CapStepper::setRequestedPos(steps.toInt());
+
   Serial.println(cmd+' '+steps);
-  //CapStepper cap;
-  cap.move(steps.toInt(),20);
-  delay(10);
+  delay(1);
   httpServer.send(200, "text/html", "api"); 
 }
 
@@ -567,4 +419,76 @@ void setupWifiSTA(const char* ssid, const char* password, const char* newMacStr)
   Serial.println(WiFi.gatewayIP());
   //WiFi.printDiag(Serial);
 
+}
+
+/*
+ * Rotor
+ * 
+ *
+ */
+void moveRotorStepperAzi(String dir, int steps , int readLimitSwitch) {
+  if(dir=="R") {
+    digitalWrite(ROT_AZI_DIR, LOW);
+  } else {
+    digitalWrite(ROT_AZI_DIR, HIGH);
+  }
+  
+  digitalWrite(ROT_AZI_ENABLED, LOW);
+  for(int i = 0; i < rot_azi_steps_rotate_360*steps; i++) {
+    
+    if(digitalRead(ROT_AZI_LIMIT_SWITCH) == HIGH && readLimitSwitch==1){
+      delay(10);
+      break;
+    }
+    
+    digitalWrite(ROT_AZI_STEP, HIGH);
+    delay(1);
+    digitalWrite(ROT_AZI_STEP, LOW);
+    delay(1);
+  }
+  digitalWrite(ROT_AZI_ENABLED, HIGH);
+}
+
+
+
+String commandRotorAzi(String cmd) {
+  String dir=getCommandValue(cmd, ' ', 1);
+  int steps=getCommandValue(cmd, ' ', 2).toInt();
+
+  moveRotorStepperAzi(dir, steps,1);
+
+   if(digitalRead(ROT_AZI_LIMIT_SWITCH)) {
+      if(dir=="L") {
+        moveRotorStepperAzi("R",ROT_STEPS_AFTER_LIMIT,0);
+      } else {
+        moveRotorStepperAzi("L",ROT_STEPS_AFTER_LIMIT,0);
+      }
+    }
+
+  return "OK";
+}
+
+String commandRotorAziMz(String cmd) {
+  //if (digitalRead(ROT_AZI_LIMIT_SWITCH) == HIGH) moveRotorStepperAzi("L", ROT_STEPS_AFTER_LIMIT,0);
+  
+  while (digitalRead(ROT_AZI_LIMIT_SWITCH) == LOW) {
+    moveRotorStepperAzi("L", 1,1);
+  }
+  moveRotorStepperAzi("R", ROT_STEPS_AFTER_LIMIT,0);
+
+  return "OK";
+}
+
+String commandRotorAziMax(String cmd) {
+  //if (digitalRead(ROT_AZI_LIMIT_SWITCH) == HIGH) moveRotorStepperAzi("L", ROT_STEPS_AFTER_LIMIT,0);
+  int count=0;
+  
+  while (digitalRead(ROT_AZI_LIMIT_SWITCH) == LOW) {
+    moveRotorStepperAzi("R", 1,1);
+    count++;
+    Serial.println("ROT_AZI_POS:"+count);
+  }
+  moveRotorStepperAzi("L", ROT_STEPS_AFTER_LIMIT,0);
+
+  return "OK";
 }
