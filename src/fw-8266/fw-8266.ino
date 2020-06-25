@@ -41,10 +41,25 @@ boolean runSetup=false;
 const int rot_azi_steps_rotate_360 = 200;
 int rot_aziCurrentPos=0;
 
+class StepperRequest {
+  public:
+    static int _newPos;
+    static int getNewPos();
+    static void setNewPos(int value);
+};
+
+int StepperRequest::_newPos=-1;
+int StepperRequest::getNewPos() {
+  return StepperRequest::_newPos;
+}
+void StepperRequest::setNewPos(int value) {
+  StepperRequest::_newPos=value;
+}
+
 class CapStepper{
   public:
-    static int _requestedPos;
     int currentPos=0;
+    int targetPos=0;
     int minPos=0;
     int maxPos=8500;
     int calSteps=100;
@@ -53,24 +68,18 @@ class CapStepper{
     void move(int steps, int rpm);
     void run();
     void clearPins();
-    static int getRequestedPos();
-    static void setRequestedPos(int value);
+    int getStepsLeft();
   private:
     CheapStepper* _stepper;
 };
 
-int CapStepper::_requestedPos = -1;
 
 CapStepper::CapStepper() {
 
 }
 
-int CapStepper::getRequestedPos() {
-  return CapStepper::_requestedPos;
-}
-
-void CapStepper::setRequestedPos(int value) {
-  CapStepper::_requestedPos=value;
+int CapStepper::getStepsLeft() {
+  return _stepper->getStepsLeft();
 }
 
 void CapStepper::init(CheapStepper& stepper) {
@@ -79,9 +88,6 @@ void CapStepper::init(CheapStepper& stepper) {
 void CapStepper::run () {
   _stepper->run();
   
-  if (_stepper->getStepsLeft()==0) {
-    clearPins();
-  }
 }
 void CapStepper::move(int steps, int rpm) {
   currentPos += steps;
@@ -157,26 +163,41 @@ void loop()
 {
   httpServer.handleClient(); 
   cap.run();
-  delay(1);
+  //delay(1);
   capStepperStateMaschine(cap);
   
 }
 
 void capStepperStateMaschine(const CapStepper& stepper) {
-  enum {START, CHANGEREQUEST, INCREASECAP, DECREASECAP};
+  enum {START, CHANGEREQUEST, MOVING};
   static int state=START;
+  
+  int newPos=StepperRequest::getNewPos();
 
-  int newPos=CapStepper::getRequestedPos();
-  //Serial.println(newPos);
   switch (state) {
     case START:
-      if(newPos!=-1){
-          cap.move(newPos,CAP_MOTOR_RPM);
+      if(newPos>=0){
           Serial.println("Statemaschine is running...");
-          CapStepper::setRequestedPos(-1);
+          cap.targetPos=newPos;
+          StepperRequest::setNewPos(-1);
+          state=CHANGEREQUEST;
       }
       break;
     case CHANGEREQUEST:
+      Serial.println("Statemaschine in state CHANGEREQUEST");
+      if(cap.targetPos == cap.currentPos){
+        state=START;
+      } else {
+        cap.move(cap.targetPos-cap.currentPos,CAP_MOTOR_RPM);
+        state=MOVING;
+      }
+      break;
+    case MOVING:
+      if(cap.getStepsLeft()==0){
+        cap.currentPos=cap.targetPos;
+        cap.clearPins();
+        state=START;
+      }
       break;
   }
   
@@ -234,6 +255,7 @@ String createIoTDeviceAddress(String postfix) {
 void setupHttpAdmin() {
   httpServer.on("/",handleHttpSetup);
   httpServer.on("/api",handleHttpApi);
+  httpServer.on("/control", handleControlMagLoop);
   httpServer.onNotFound(handleHttp404);
   httpServer.begin();
 }
@@ -242,11 +264,92 @@ void handleHttpApi() {
   String cmd=httpServer.arg("command");
   String steps=httpServer.arg("steps");
 
-  CapStepper::setRequestedPos(steps.toInt());
+  if(cmd=="CAL") {
+    cap.move(steps.toInt(),CAP_MOTOR_RPM);
+  } else if(cmd='MOVE') {
+    StepperRequest::setNewPos(steps.toInt());
+  }
 
-  Serial.println(cmd+' '+steps);
   delay(1);
   httpServer.send(200, "text/html", "api"); 
+}
+
+void handleControlMagLoop() {
+  String html=
+      "<!DOCTYPE HTML>"
+    "<html>"
+    "<head>"
+      "<meta name = \"viewport\" content = \"width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0\">"
+      "<title>Controlcenter</title>"
+      "<style>"
+      "\"body { background-color: #808080; font-family: Arial, Helvetica, Sans-Serif; Color: #000000; }\""
+      "</style>"
+      "<script langauage=\"javascript\">"
+      "function requestControl(pos){"
+      "var request=new XMLHttpRequest();"
+      "request.open('GET','/api?command=MOVE&steps='+pos+'');"
+      "request.send();"
+      "}"
+      "</script>"
+      "<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css\">"
+      "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js\"></script>"
+      "<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js\"></script>"
+    "</head>"
+    "<body>"
+    "<nav class=\"navbar navbar-inverse\">"
+    "  <div class=\"container-fluid\">"
+    "    <div class=\"navbar-header\">"
+    "      <a class=\"navbar-brand\" href=\"#\">MagLoop ControlCenter</a>"
+    "    </div>"
+    "    <ul class=\"nav navbar-nav\">"
+    "      <li class=\"active\"><a href=\"#\">Home</a></li>"
+    "      <li class=\"dropdown\">"
+    "        <a class=\"dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">Page 1"
+    "        <span class=\"caret\"></span></a>"
+    "        <ul class=\"dropdown-menu\">"
+    "          <li><a href=\"#\">Page 1-1</a></li>"
+    "          <li><a href=\"#\">Page 1-2</a></li>"
+    "          <li><a href=\"#\">Page 1-3</a></li>"
+    "        </ul>"
+    "      </li>"
+    "      <li><a href=\"#\">Page 2</a></li>"
+    "      <li><a href=\"#\">Page 3</a></li>"
+    "    </ul>"
+    "  </div>"
+    "</nav>"
+    "<FORM action=\"/\" method=\"post\">"
+    "<P>"
+    "<div class=\"row\">"
+    "  <div class=\"col-sm-5\"></div>"
+    "  <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick=\"requestControl(8500)\">Maximales C</button></div>"
+    "  <div class=\"col-sm-5\"></div>"
+    "</div>"
+    "<div class=\"row\">"
+    "  <div class=\"col-sm-5\"></div>"
+    "  <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick=\"requestControl(0)\">Minimales</button></div>"
+    "  <div class=\"col-sm-5\"></div>"
+    "</div>"
+    "<div class=\"row\">"
+    "  <div class=\"col-sm-5\"></div>"
+    "    <div class=\"col-sm-2\">"
+    "      <div class=\"dropdown\">"
+    "        <button class=\"btn btn-primary dropdown-toggle btn-lg btn-block\" type=\"button\" data-toggle=\"dropdown\">Favoriten"
+    "        <span class=\"caret\"></span></button>"
+    "        <ul class=\"dropdown-menu\">"
+    "          <li><a onclick=\"alert('hallo');\" href=\"#\">14.074 MHz</a></li>"
+    "          <li><a href=\"#\">14.078 MHz</a></li>"
+    "          <li><a href=\"#\">14.230 MHz</a></li>"
+    "        </ul>"
+    "      </div>"    
+    "    </div>"
+    "  <div class=\"col-sm-5\"></div>"
+    "</div>"
+    "</P>"
+    "</FORM>"
+    "</body>"
+    "</html>";
+
+  httpServer.send(200,"text/html", html);
 }
 
 void handleHttpSetup() {
@@ -274,7 +377,7 @@ void handleHttpSetup() {
     "<html>"
     "<head>"
     "<meta name = \"viewport\" content = \"width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0\">"
-    "<title>DK9MBS/KI5HDH IoT Sensor</title>"
+    "<title>DK9MBS/KI5HDH MagLoop Setup</title>"
     "<style>"
     "\"body { background-color: #808080; font-family: Arial, Helvetica, Sans-Serif; Color: #000000; }\""
     "</style>"
