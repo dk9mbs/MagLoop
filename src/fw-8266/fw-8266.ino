@@ -44,18 +44,27 @@ int rot_aziCurrentPos=0;
 class StepperRequest {
   public:
     static int _newPos;
+    static int _newRelPos;
     static int getNewPos();
     static void setNewPos(int value);
+    static int getNewRelPos();
+    static void setNewRelPos(int value);
 };
 
 int StepperRequest::_newPos=-1;
+int StepperRequest::_newRelPos=0;
 int StepperRequest::getNewPos() {
   return StepperRequest::_newPos;
 }
 void StepperRequest::setNewPos(int value) {
   StepperRequest::_newPos=value;
 }
-
+int StepperRequest::getNewRelPos() {
+  return _newRelPos;
+}
+void StepperRequest::setNewRelPos(int value){
+  _newRelPos=value;
+}
 class CapStepper{
   public:
     int currentPos=0;
@@ -69,6 +78,9 @@ class CapStepper{
     void run();
     void clearPins();
     int getStepsLeft();
+    int getCurrentPos();
+    int getMinPos();
+    int getMaxPos();
   private:
     CheapStepper* _stepper;
 };
@@ -76,6 +88,15 @@ class CapStepper{
 
 CapStepper::CapStepper() {
 
+}
+int CapStepper::getMinPos() {
+  return minPos;
+}
+int CapStepper::getMaxPos() {
+  return maxPos;
+}
+int CapStepper::getCurrentPos() {
+  return currentPos;
 }
 
 int CapStepper::getStepsLeft() {
@@ -169,10 +190,16 @@ void loop()
 }
 
 void capStepperStateMaschine(const CapStepper& stepper) {
-  enum {START, CHANGEREQUEST, MOVING};
+  enum {START, CHANGEREQUEST, MOVING, NEWRELCHANGEREQUEST};
   static int state=START;
   
   int newPos=StepperRequest::getNewPos();
+  int newRelPos=StepperRequest::getNewRelPos();
+  
+  if(newPos<-1) newPos=cap.getMinPos();
+  if(newPos>cap.getMaxPos()) newPos=cap.getMaxPos();
+
+  if(newPos!=-1)   Serial.println(newPos);
 
   switch (state) {
     case START:
@@ -182,6 +209,14 @@ void capStepperStateMaschine(const CapStepper& stepper) {
           StepperRequest::setNewPos(-1);
           state=CHANGEREQUEST;
       }
+      if(newRelPos!=0) {
+        state=NEWRELCHANGEREQUEST;
+      }
+      break;
+    case NEWRELCHANGEREQUEST:
+      StepperRequest::setNewPos(cap.getCurrentPos()+newRelPos);
+      StepperRequest::setNewRelPos(0);
+      state=START;
       break;
     case CHANGEREQUEST:
       Serial.println("Statemaschine in state CHANGEREQUEST");
@@ -263,15 +298,26 @@ void setupHttpAdmin() {
 void handleHttpApi() {
   String cmd=httpServer.arg("command");
   String steps=httpServer.arg("steps");
-
+  String responseBody="api";
+  
   if(cmd=="CAL") {
     cap.move(steps.toInt(),CAP_MOTOR_RPM);
-  } else if(cmd='MOVE') {
+  } else if(cmd=="MOVE") {
     StepperRequest::setNewPos(steps.toInt());
+  } else if(cmd=="INCREASE_SMALL_STEP") {
+    StepperRequest::setNewRelPos(10);
+  } else if (cmd=="INCREASE_BIG_STEP") {
+    StepperRequest::setNewRelPos(100);
+  } else if (cmd=="DECREASE_SMALL_STEP") {
+    StepperRequest::setNewRelPos(-10);
+  } else if (cmd=="DECREASE_BIG_STEP") {
+    StepperRequest::setNewRelPos(-100);
+  } else if (cmd=="GETCURRENTPOS") {
+    responseBody=String(cap.getCurrentPos());
   }
 
   delay(1);
-  httpServer.send(200, "text/html", "api"); 
+  httpServer.send(200, "text/html", responseBody); 
 }
 
 void handleControlMagLoop() {
@@ -279,6 +325,7 @@ void handleControlMagLoop() {
       "<!DOCTYPE HTML>"
     "<html>"
     "<head>"
+      "<title>AG5ZL MagLoop</title>"
       "<meta name = \"viewport\" content = \"width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0\">"
       "<title>Controlcenter</title>"
       "<style>"
@@ -288,6 +335,11 @@ void handleControlMagLoop() {
       "function requestControl(pos){"
       "var request=new XMLHttpRequest();"
       "request.open('GET','/api?command=MOVE&steps='+pos+'');"
+      "request.send();"
+      "}"
+      "function requestRawCommand(command){"
+      "var request=new XMLHttpRequest();"
+      "request.open('GET','/api?command='+command);"
       "request.send();"
       "}"
       "</script>"
@@ -302,33 +354,20 @@ void handleControlMagLoop() {
     "      <a class=\"navbar-brand\" href=\"#\">MagLoop ControlCenter</a>"
     "    </div>"
     "    <ul class=\"nav navbar-nav\">"
-    "      <li class=\"active\"><a href=\"#\">Home</a></li>"
     "      <li class=\"dropdown\">"
-    "        <a class=\"dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">Page 1"
+    "        <a class=\"dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">MagLoop"
     "        <span class=\"caret\"></span></a>"
     "        <ul class=\"dropdown-menu\">"
-    "          <li><a href=\"#\">Page 1-1</a></li>"
-    "          <li><a href=\"#\">Page 1-2</a></li>"
+    "          <li><a href=\"#\" onclick=\"requestControl(0)\">Reset C (min. C)</a></li>"
     "          <li><a href=\"#\">Page 1-3</a></li>"
     "        </ul>"
     "      </li>"
-    "      <li><a href=\"#\">Page 2</a></li>"
-    "      <li><a href=\"#\">Page 3</a></li>"
+    "      <li><a href=\"#\">Settings</a></li>"
     "    </ul>"
     "  </div>"
     "</nav>"
     "<FORM action=\"/\" method=\"post\">"
     "<P>"
-    "<div class=\"row\">"
-    "  <div class=\"col-sm-5\"></div>"
-    "  <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick=\"requestControl(8500)\">Maximales C</button></div>"
-    "  <div class=\"col-sm-5\"></div>"
-    "</div>"
-    "<div class=\"row\">"
-    "  <div class=\"col-sm-5\"></div>"
-    "  <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick=\"requestControl(0)\">Minimales</button></div>"
-    "  <div class=\"col-sm-5\"></div>"
-    "</div>"
     "<div class=\"row\">"
     "  <div class=\"col-sm-5\"></div>"
     "    <div class=\"col-sm-2\">"
@@ -344,6 +383,17 @@ void handleControlMagLoop() {
     "    </div>"
     "  <div class=\"col-sm-5\"></div>"
     "</div>"
+    ""
+    "<div class=\"row\">"
+    "  <div class=\"col-sm-1\"></div>"
+    "    <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick=\"requestRawCommand('DECREASE_SMALL_STEP')\">-</button></div>"
+    "    <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick=\"requestRawCommand('DECREASE_BIG_STEP')\">--</button></div>"
+    "    <div class=\"col-sm-2\">0</div>"
+    "    <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick=\"requestRawCommand('INCREASE_BIG_STEP')\">++</button></div>"
+    "    <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick=\"requestRawCommand('INCREASE_SMALL_STEP')\">+</button></div>"
+    "  <div class=\"col-sm-1\"></div>"
+    "</div>"
+    ""
     "</P>"
     "</FORM>"
     "</body>"
@@ -377,7 +427,7 @@ void handleHttpSetup() {
     "<html>"
     "<head>"
     "<meta name = \"viewport\" content = \"width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0\">"
-    "<title>DK9MBS/KI5HDH MagLoop Setup</title>"
+    "<title>DK9MBS/AG5ZL MagLoop Setup</title>"
     "<style>"
     "\"body { background-color: #808080; font-family: Arial, Helvetica, Sans-Serif; Color: #000000; }\""
     "</style>"
