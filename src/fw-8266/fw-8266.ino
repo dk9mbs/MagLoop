@@ -10,7 +10,7 @@
 #include <FS.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPClient.h>
-
+#include "config.h"
 
 #define SETUPPIN D1 //5 
 #define CAP_MOTOR_RPM 20
@@ -32,8 +32,6 @@ ESP8266WebServer httpServer(80);
 CheapStepper stepper (C_STEPPER_PIN1,C_STEPPER_PIN2,C_STEPPER_PIN3,C_STEPPER_PIN4); 
 
 HTTPClient http;
-
-enum cap_state {START,RUNNING};
 
 boolean runSetup=false;
 
@@ -134,12 +132,31 @@ void CapStepper::clearPins() {
 
 CapStepper cap;
 
+#define CAP_FREQ_TABLE_SIZE 100
+class CapFreqTable {
+  public:
+    static int _mapping[100][2];
+    static int count();
+};
+
+int CapFreqTable::_mapping[100][2]={{4400,14074000},{4900,14230000},{4900,14230000},{4900,14230000},{4900,14230000}};
+int CapFreqTable::count() {
+  return CAP_FREQ_TABLE_SIZE;
+}
 
 void setup()
 {
   cap.init(stepper);
   
   Serial.begin(115200);
+
+  // start
+  for(int l=0;l<CAP_FREQ_TABLE_SIZE;l++){
+    Serial.print(CapFreqTable::_mapping[l][0]);
+    Serial.print("->");
+    Serial.println(CapFreqTable::_mapping[l][1]);
+  }
+  // end
   
   setupIo();
   setupFileSystem();
@@ -172,10 +189,6 @@ void setup()
     
     Serial.println("Waiting for commands over http...");
     delay(1000);
-    
-    // Invert beachten!!!
-    //cap.move(cap_maxPos, CAP_MOTOR_RPM);
-    //cap.move(cap_maxPos*-1, CAP_MOTOR_RPM);
     
   } 
 }
@@ -333,15 +346,29 @@ void handleControlMagLoop() {
       "</style>"
       "<script langauage=\"javascript\">"
       "function requestControl(pos){"
-      "var request=new XMLHttpRequest();"
-      "request.open('GET','/api?command=MOVE&steps='+pos+'');"
-      "request.send();"
-      "}"
+      " var request=new XMLHttpRequest();"
+      " request.open('GET','/api?command=MOVE&steps='+pos+'', true);"
+      " request.send();"
+      "};"
       "function requestRawCommand(command){"
       "var request=new XMLHttpRequest();"
       "request.open('GET','/api?command='+command);"
+      " request.onreadystatechange=function() {"
+      "   if(request.readyState === XMLHttpRequest.DONE){"
+      "     var req=new XMLHttpRequest();"
+      "     req.open('GET','/api?command=GETCURRENTPOS',true);"
+      "     req.onreadystatechange=function() {"
+      "       if(req.readyState === XMLHttpRequest.DONE) {"
+      "         console.log(req.responseText);"
+      "         document.getElementById('divCurrentPos').innerHTML=req.responseText;"
+      "       };"
+      "     };"
+      "     req.send();"  
+      "   };"
+      " };"
       "request.send();"
-      "}"
+      "};"
+      "function setCurrentCapPos() [};"
       "</script>"
       "<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css\">"
       "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js\"></script>"
@@ -359,7 +386,6 @@ void handleControlMagLoop() {
     "        <span class=\"caret\"></span></a>"
     "        <ul class=\"dropdown-menu\">"
     "          <li><a href=\"#\" onclick=\"requestControl(0)\">Reset C (min. C)</a></li>"
-    "          <li><a href=\"#\">Page 1-3</a></li>"
     "        </ul>"
     "      </li>"
     "      <li><a href=\"#\">Settings</a></li>"
@@ -388,7 +414,7 @@ void handleControlMagLoop() {
     "  <div class=\"col-sm-1\"></div>"
     "    <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick=\"requestRawCommand('DECREASE_SMALL_STEP')\">-</button></div>"
     "    <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick=\"requestRawCommand('DECREASE_BIG_STEP')\">--</button></div>"
-    "    <div class=\"col-sm-2\">0</div>"
+    "    <div class=\"col-sm-2\" id=\"divCurrentPos\">0</div>"
     "    <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick=\"requestRawCommand('INCREASE_BIG_STEP')\">++</button></div>"
     "    <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick=\"requestRawCommand('INCREASE_SMALL_STEP')\">+</button></div>"
     "  <div class=\"col-sm-1\"></div>"
