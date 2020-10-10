@@ -132,32 +132,12 @@ void CapStepper::clearPins() {
 
 CapStepper cap;
 
-#define CAP_FREQ_TABLE_SIZE 100
-class CapFreqTable {
-  public:
-    static int _mapping[100][2];
-    static int count();
-};
-
-int CapFreqTable::_mapping[100][2]={{4400,14074000},{4900,14230000},{4900,14230000},{4900,14230000},{4900,14230000}};
-int CapFreqTable::count() {
-  return CAP_FREQ_TABLE_SIZE;
-}
-
 void setup()
 {
   cap.init(stepper);
   
   Serial.begin(115200);
 
-  // start
-  for(int l=0;l<CAP_FREQ_TABLE_SIZE;l++){
-    Serial.print(CapFreqTable::_mapping[l][0]);
-    Serial.print("->");
-    Serial.println(CapFreqTable::_mapping[l][1]);
-  }
-  // end
-  
   setupIo();
   setupFileSystem();
 
@@ -167,8 +147,6 @@ void setup()
   Serial.println(digitalRead(SETUPPIN));
   Serial.print("adminpwd: ");
   Serial.println(readConfigValue("adminpwd"));
-
-
   
   if(runSetup) {
     setupWifiAP();
@@ -212,7 +190,7 @@ void capStepperStateMaschine(const CapStepper& stepper) {
   if(newPos<-1) newPos=cap.getMinPos();
   if(newPos>cap.getMaxPos()) newPos=cap.getMaxPos();
 
-  if(newPos!=-1)   Serial.println(newPos);
+  //if(newPos!=-1)   Serial.println(newPos);
 
   switch (state) {
     case START:
@@ -303,7 +281,6 @@ String createIoTDeviceAddress(String postfix) {
 void setupHttpAdmin() {
   httpServer.on("/",handleHttpSetup);
   httpServer.on("/api",handleHttpApi);
-  httpServer.on("/control", handleControlMagLoop);
   httpServer.onNotFound(handleHttp404);
   httpServer.begin();
 }
@@ -331,101 +308,6 @@ void handleHttpApi() {
 
   delay(1);
   httpServer.send(200, "text/html", responseBody); 
-}
-
-void handleControlMagLoop() {
-  String html=
-      "<!DOCTYPE HTML>"
-    "<html>"
-    "<head>"
-      "<title>AG5ZL MagLoop</title>"
-      "<meta name = \"viewport\" content = \"width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0\">"
-      "<title>Controlcenter</title>"
-      "<style>"
-      "\"body { background-color: #808080; font-family: Arial, Helvetica, Sans-Serif; Color: #000000; }\""
-      "</style>"
-      "<script langauage=\"javascript\">"
-      "function requestControl(pos){"
-      " var request=new XMLHttpRequest();"
-      " request.open('GET','/api?command=MOVE&steps='+pos+'', true);"
-      " request.send();"
-      "};"
-      "function requestRawCommand(command){"
-      "var request=new XMLHttpRequest();"
-      "request.open('GET','/api?command='+command);"
-      " request.onreadystatechange=function() {"
-      "   if(request.readyState === XMLHttpRequest.DONE){"
-      "     var req=new XMLHttpRequest();"
-      "     req.open('GET','/api?command=GETCURRENTPOS',true);"
-      "     req.onreadystatechange=function() {"
-      "       if(req.readyState === XMLHttpRequest.DONE) {"
-      "         console.log(req.responseText);"
-      "         document.getElementById('divCurrentPos').innerHTML=req.responseText;"
-      "       };"
-      "     };"
-      "     req.send();"  
-      "   };"
-      " };"
-      "request.send();"
-      "};"
-      "function setCurrentCapPos() [};"
-      "</script>"
-      "<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css\">"
-      "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js\"></script>"
-      "<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js\"></script>"
-    "</head>"
-    "<body>"
-    "<nav class=\"navbar navbar-inverse\">"
-    "  <div class=\"container-fluid\">"
-    "    <div class=\"navbar-header\">"
-    "      <a class=\"navbar-brand\" href=\"#\">MagLoop ControlCenter</a>"
-    "    </div>"
-    "    <ul class=\"nav navbar-nav\">"
-    "      <li class=\"dropdown\">"
-    "        <a class=\"dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">MagLoop"
-    "        <span class=\"caret\"></span></a>"
-    "        <ul class=\"dropdown-menu\">"
-    "          <li><a href=\"#\" onclick=\"requestControl(0)\">Reset C (min. C)</a></li>"
-    "        </ul>"
-    "      </li>"
-    "      <li><a href=\"#\">Settings</a></li>"
-    "    </ul>"
-    "  </div>"
-    "</nav>"
-    "<FORM action=\"/\" method=\"post\">"
-    "<P>"
-    "<div class=\"row\">"
-    "  <div class=\"col-sm-5\"></div>"
-    "    <div class=\"col-sm-2\">"
-    "      <div class=\"dropdown\">"
-    "        <button class=\"btn btn-primary dropdown-toggle btn-lg btn-block\" type=\"button\" data-toggle=\"dropdown\">Favoriten"
-    "        <span class=\"caret\"></span></button>"
-    "        <ul class=\"dropdown-menu\">"
-    "          <li><a onclick=\"alert('hallo');\" href=\"#\">14.074 MHz</a></li>"
-    "          <li><a href=\"#\">14.078 MHz</a></li>"
-    "          <li><a href=\"#\">14.230 MHz</a></li>"
-    "        </ul>"
-    "      </div>"    
-    "    </div>"
-    "  <div class=\"col-sm-5\"></div>"
-    "</div>"
-    ""
-    "<div class=\"row\">"
-    "  <div class=\"col-sm-1\"></div>"
-    "    <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick=\"requestRawCommand('DECREASE_SMALL_STEP')\">-</button></div>"
-    "    <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick=\"requestRawCommand('DECREASE_BIG_STEP')\">--</button></div>"
-    "    <div class=\"col-sm-2\" id=\"divCurrentPos\">0</div>"
-    "    <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick=\"requestRawCommand('INCREASE_BIG_STEP')\">++</button></div>"
-    "    <div class=\"col-sm-2\"><button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick=\"requestRawCommand('INCREASE_SMALL_STEP')\">+</button></div>"
-    "  <div class=\"col-sm-1\"></div>"
-    "</div>"
-    ""
-    "</P>"
-    "</FORM>"
-    "</body>"
-    "</html>";
-
-  httpServer.send(200,"text/html", html);
 }
 
 void handleHttpSetup() {
