@@ -1,7 +1,7 @@
 #!/usr/bin/python3.7
-
 import requests
 import json
+import sys
 from enum import Enum
 
 class MagLoopStepSize(Enum):
@@ -17,15 +17,60 @@ class MagLoopLib:
         self._url=url
 
     """
+    read the mapping file
+    mappings: list with mapping informations
+    frequency: f in MHz
+    """
+    def move_by_frequency(self, mappings, frequency):
+        f_last=0
+        step_last=0
+        for mapping in mappings:
+            f=float(mapping['f'])
+            step=int(mapping['step'])
+
+            if f<=frequency:
+                diff_last=f_last-frequency
+                diff_current=frequency-f
+                diff=diff_current-diff_last
+                if diff>0:
+                    f=f_last
+                    step=step_last
+                break
+
+            f_last=f
+            step_last=step
+
+        self.move_absolute(step)
+        return step
+
+    """
     Move the capacitor to the target position in steps
     """
-    def move_absolute(self, target):
-        url=f"{self._url}/api?command=MOVE&steps={target}"
+    def move_absolute(self, target_position, wait=False):
+        url=f"{self._url}/api?command=MOVE&steps={target_position}"
         r=requests.get(url)
         if r.status_code!=200:
             raise NameError(f"{r.status_code} {r.text}")
 
+        current_position=-1
+        if wait:
+            while current_position!=int(target_position):
+                current_position=int(self.current_position()['result'])
+                print("*", end = '', flush=True)
+                time.sleep(1.0)
+
+            print("")
         return {"result": r.text, "status_code": r.status_code}
+
+    def _wait_for_position(self):
+        current_position=-1
+        while current_position!=int(target_position):
+            current_position=int(self.current_position()['result'])
+            print("*", end = '', flush=True)
+            time.sleep(1.0)
+
+        print("")
+
 
     """
     Get the current position from the capacitor in steps
@@ -38,7 +83,11 @@ class MagLoopLib:
 
         return {"result": r.text, "status_code": r.status_code}
 
-
+    """
+    Move the stepper relative to the current position.
+    you can choose between a small and a big step.
+    The stepsizes (small or big) are defined at the magloop firmware (esp8266)
+    """
     def move_relative(self,direction=MagLoopDirection.INCREASE, step_size=MagLoopStepSize.SMALL):
         if step_size==MagLoopStepSize.SMALL and direction==MagLoopDirection.INCREASE:
             command="INCREASE_SMALL_STEP"
@@ -59,23 +108,18 @@ class MagLoopLib:
 
 
 if __name__=='__main__':
-    move=True
-
-    magloop=MagLoopLib('http://192.168.2.114')
-
-    if move==True:
-        print(magloop.move_absolute(0))
-        print(magloop.move_absolute(8500))
-        print(magloop.move_absolute(4200))
-        print(magloop.move_absolute(7200))
-        print(magloop.move_absolute(10))
-        print(magloop.move_absolute(8000))
-        print(magloop.move_absolute(8500))
-        print(magloop.move_absolute(200))
-        print(magloop.move_absolute(350))
-        print(magloop.move_absolute(7350))
-        print(magloop.move_absolute(8500))
-
+    import time
+    magloop=MagLoopLib('http://magloop')
     #print(magloop.move_relative(MagLoopDirection.INCREASE, MagLoopStepSize.BIG))
-    print(magloop.current_position())
+
+    import json
+    f=open('map.json')
+    map=json.loads(f.read())
+    #print(magloop.move_by_frequency(map,7.074))
+    #print(magloop.move_by_frequency(map,14.078))
+    #print(magloop.move_by_frequency(map,14.074))
+    magloop.move_absolute(0, True)
+    magloop.move_absolute(8500, True)
+    magloop.move_absolute(0, True)
+
 
