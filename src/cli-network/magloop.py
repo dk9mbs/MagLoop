@@ -26,14 +26,13 @@ position=args.position
 
 magloop=MagLoopLib(args.url)
 if command=='move_absolute':
-    result=magloop.move_absolute(position)
+    result=magloop.move_absolute(position,True)
 elif command=='move_relative':
-    result=magloop.move_relative(MagLoopDirection.INCREASE, MagLoopStepSize.BIG)
+    result=magloop.move_relative(MagLoopDirection.INCREASE, MagLoopStepSize.BIG,True)
 elif command=='position':
-    result=magloop.current_position()
+    result=magloop.get_current_position()
 else:
     print("ERROR")
 
 print(result)
-print(magloop.current_position())
-
+print(magloop.get_current_position())

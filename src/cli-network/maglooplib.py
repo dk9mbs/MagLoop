@@ -2,6 +2,7 @@
 import requests
 import json
 import sys
+import time
 from enum import Enum
 
 class MagLoopStepSize(Enum):
@@ -15,6 +16,11 @@ class MagLoopDirection(Enum):
 class MagLoopLib:
     def __init__(self, url):
         self._url=url
+        self._current_position=0
+        self.__read_current_position()
+
+    def get_current_position(self):
+        return self._current_position
 
     """
     read the mapping file
@@ -54,61 +60,51 @@ class MagLoopLib:
 
         current_position=-1
         if wait:
-            while current_position!=int(target_position):
-                current_position=int(self.current_position()['result'])
-                print("*", end = '', flush=True)
-                time.sleep(1.0)
-
-            print("")
-        return {"result": r.text, "status_code": r.status_code}
-
-    def _wait_for_position(self):
-        current_position=-1
-        while current_position!=int(target_position):
-            current_position=int(self.current_position()['result'])
-            print("*", end = '', flush=True)
-            time.sleep(1.0)
-
-        print("")
-
-
-    """
-    Get the current position from the capacitor in steps
-    """
-    def current_position(self):
-        url=f"{self._url}/api?command=GETCURRENTPOS"
-        r=requests.get(url)
-        if r.status_code!=200:
-            raise NameError(f"{r.status_code} {r.text}")
+            self._wait_for_position(target_position)
 
         return {"result": r.text, "status_code": r.status_code}
 
     """
     Move the stepper relative to the current position.
     you can choose between a small and a big step.
-    The stepsizes (small or big) are defined at the magloop firmware (esp8266)
     """
-    def move_relative(self,direction=MagLoopDirection.INCREASE, step_size=MagLoopStepSize.SMALL):
+    def move_relative(self,direction=MagLoopDirection.INCREASE, step_size=MagLoopStepSize.SMALL, wait=False):
+        self.__read_current_position()
+        position=0
         if step_size==MagLoopStepSize.SMALL and direction==MagLoopDirection.INCREASE:
-            command="INCREASE_SMALL_STEP"
+            position=self._current_position+10
         elif step_size==MagLoopStepSize.BIG and direction==MagLoopDirection.INCREASE:
-            command="INCREASE_BIG_STEP"
+            position=self._current_position+100
         elif step_size==MagLoopStepSize.SMALL and direction==MagLoopDirection.DECREASE:
-            command="DECREASE_SMALL_STEP"
+            position=self._current_position-10
         elif step_size==MagLoopStepSize.BIG and direction==MagLoopDirection.DECREASE:
-            command="DECREASE_BIG_STEP"
+            position=self._current_position-100
+        return self.move_absolute(position, wait)
 
-        url=f"{self._url}/api?command={command}"
+    def _wait_for_position(self, target_position):
+        current_position=-1
+        while current_position!=int(target_position):
+            self.__read_current_position()
+            current_position=int(self._current_position)
+            print(".", end = '', flush=True)
+            time.sleep(1.0)
+        print("")
+
+    """
+    Get the current position from the capacitor in steps
+    """
+    def __read_current_position(self):
+        url=f"{self._url}/api?command=GETCURRENTPOS"
         r=requests.get(url)
         if r.status_code!=200:
             raise NameError(f"{r.status_code} {r.text}")
 
-        return {"result": r.text, "status_code": r.status_code}
+        self._current_position=int(r.text)
+
 
 
 
 if __name__=='__main__':
-    import time
     magloop=MagLoopLib('http://magloop')
     #print(magloop.move_relative(MagLoopDirection.INCREASE, MagLoopStepSize.BIG))
 
