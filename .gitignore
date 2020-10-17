@@ -1,3 +1,5 @@
 xxx_backup
 .gcode
 .stl
+*.FCStd1
+*.pyc

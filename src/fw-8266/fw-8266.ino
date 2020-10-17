@@ -109,7 +109,7 @@ void CapStepper::run () {
   
 }
 void CapStepper::move(int steps, int rpm) {
-  currentPos += steps;
+  //currentPos += steps;
 
   _stepper->setRpm(rpm);
   bool moveClockwise;
