@@ -10,6 +10,8 @@
 #include <FS.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPClient.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 #include "config.h"
 
 #define SETUPPIN D1 //5 
@@ -26,12 +28,14 @@
 #define C_STEPPER_PIN3 D7
 #define C_STEPPER_PIN4 D8
 
+#define DISPLAY_SCL D3 //D3   (0)
+#define DISPLAY_SDA D4 //D4   (2)
 
 WiFiClient espClient;
 ESP8266WebServer httpServer(80);
 CheapStepper stepper (C_STEPPER_PIN1,C_STEPPER_PIN2,C_STEPPER_PIN3,C_STEPPER_PIN4); 
-
 HTTPClient http;
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 boolean runSetup=false;
 
@@ -134,9 +138,15 @@ CapStepper cap;
 
 void setup()
 {
-  cap.init(stepper);
   
   Serial.begin(115200);
+  /* Start the display */
+  lcd.begin(DISPLAY_SDA, DISPLAY_SCL);
+  lcd.setCursor(0, 0); // Spalte, Zeile
+  printLcd(lcd, 0,1, "booting ...",1);
+  delay (1000);  
+
+  cap.init(stepper);
 
   setupIo();
   setupFileSystem();
@@ -432,6 +442,9 @@ void setupWifiAP(){
   WiFi.softAP("sensor.iot.dk9mbs.de", pwd);
 
   Serial.println("AP started");
+  
+  printLcd(lcd, 0,1, "Password:",1);
+  printLcd(lcd, 0,1, pwd,0);
 
 }
 
@@ -479,6 +492,8 @@ void setupWifiSTA(const char* ssid, const char* password, const char* newMacStr)
   Serial.print("Gateway:");
   Serial.println(WiFi.gatewayIP());
   //WiFi.printDiag(Serial);
+
+  printLcd(lcd, 0,1, WiFi.localIP(),1);
 
 }
 
@@ -552,4 +567,20 @@ String commandRotorAziMax(String cmd) {
   moveRotorStepperAzi("L", ROT_STEPS_AFTER_LIMIT,0);
 
   return "OK";
+}
+
+/*
+ * Display
+ */
+void printLcd(LiquidCrystal_I2C& lcdDisplay,int column, int row, IPAddress text, int clear) {
+  if(clear==1) lcdDisplay.clear();
+  
+  lcdDisplay.setCursor(column, row); // Spalte, Zeile
+  lcdDisplay.print(text);
+} 
+void printLcd(LiquidCrystal_I2C& lcdDisplay,int column, int row, String text, int clear) {
+  if(clear==1) lcdDisplay.clear();
+  
+  lcdDisplay.setCursor(column, row); // Spalte, Zeile
+  lcdDisplay.print(text);
 }
