@@ -270,18 +270,6 @@ String getCommandValue(String data, char separator, int index)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 String createIoTDeviceAddress(String postfix) {
   String address=String(readConfigValue("mac")+"."+postfix);
   address.replace("-","");
@@ -443,7 +431,7 @@ void setupWifiAP(){
 
   Serial.println("AP started");
   
-  printLcd(lcd, 0,1, "Password:",1);
+  printLcd(lcd, 0,0, "WLAN Password",1);
   printLcd(lcd, 0,1, pwd,0);
 
 }
@@ -493,7 +481,8 @@ void setupWifiSTA(const char* ssid, const char* password, const char* newMacStr)
   Serial.println(WiFi.gatewayIP());
   //WiFi.printDiag(Serial);
 
-  printLcd(lcd, 0,1, WiFi.localIP(),1);
+  printLcd(lcd, 0,0, "AG5ZL MagLoop",1);
+  printLcd(lcd, 0,1, WiFi.localIP(),0);
 
 }
 
