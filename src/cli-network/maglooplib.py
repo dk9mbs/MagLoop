@@ -81,12 +81,22 @@ class MagLoopLib:
             position=self._current_position-100
         return self.move_absolute(position, wait)
 
+    def set_display(self, text, line=0):
+        url=f"{self._url}/api?command=SETDISPLAY&line0={text}"
+        r=requests.get(url)
+        if r.status_code!=200:
+            raise NameError(f"{r.status_code} {r.text}")
+
     def _wait_for_position(self, target_position):
         current_position=-1
+        if target_position<0:
+            target_position=0
+
         while current_position!=int(target_position):
             self.__read_current_position()
             current_position=int(self._current_position)
             print(".", end = '', flush=True)
+            print(f"{target_position}:{current_position}")
             time.sleep(1.0)
         print("")
 

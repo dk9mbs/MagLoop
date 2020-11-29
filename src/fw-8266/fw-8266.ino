@@ -145,8 +145,10 @@ void setup()
   lcd.setCursor(0, 0); // Spalte, Zeile
   printLcd(lcd, 0,1, "booting ...",1);
   delay (1000);  
-
+  
+  printLcd(lcd, 0,1, "init stepper ...",1);
   cap.init(stepper);
+  delay (1000);  
 
   setupIo();
   setupFileSystem();
@@ -164,20 +166,17 @@ void setup()
   } else {
     setupHttpAdmin();
     setupWifiSTA(readConfigValue("ssid").c_str(), readConfigValue("password").c_str(), readConfigValue("mac").c_str());
-  
-    pinMode(ROT_AZI_STEP, OUTPUT);
-    pinMode(ROT_AZI_DIR, OUTPUT);
-    pinMode(ROT_AZI_ENABLED, OUTPUT);
-    pinMode(ROT_AZI_LIMIT_SWITCH,INPUT_PULLUP);
-    pinMode(ROT_ELE_LIMIT_SWITCH,INPUT_PULLUP);
-    
-    digitalWrite(ROT_AZI_STEP, HIGH);
-    digitalWrite(ROT_AZI_DIR, LOW);
-    digitalWrite(ROT_AZI_ENABLED, HIGH);
-    
+
+    //pinMode(ROT_AZI_STEP, OUTPUT);
+    //pinMode(ROT_AZI_DIR, OUTPUT);
+    //pinMode(ROT_AZI_ENABLED, OUTPUT);
+    //pinMode(ROT_AZI_LIMIT_SWITCH,INPUT_PULLUP);
+    //pinMode(ROT_ELE_LIMIT_SWITCH,INPUT_PULLUP);
+    //digitalWrite(ROT_AZI_STEP, HIGH);
+    //digitalWrite(ROT_AZI_DIR, LOW);
+    //digitalWrite(ROT_AZI_ENABLED, HIGH);
     Serial.println("Waiting for commands over http...");
     delay(1000);
-    
   } 
 }
 
@@ -200,6 +199,8 @@ void capStepperStateMaschine(const CapStepper& stepper) {
   if(newPos<-1) newPos=cap.getMinPos();
   if(newPos>cap.getMaxPos()) newPos=cap.getMaxPos();
 
+  if(digitalRead(SETUPPIN)==0) newPos=0;
+
   //if(newPos!=-1)   Serial.println(newPos);
 
   switch (state) {
@@ -207,6 +208,8 @@ void capStepperStateMaschine(const CapStepper& stepper) {
       if(newPos>=0){
           Serial.println("Statemaschine is running...");
           cap.targetPos=newPos;
+          clearLcdLine(lcd,1);
+          printLcd(lcd, 0,1, "moving:"+String(cap.targetPos),0); //col, row
           StepperRequest::setNewPos(-1);
           state=CHANGEREQUEST;
       }
@@ -230,6 +233,9 @@ void capStepperStateMaschine(const CapStepper& stepper) {
       break;
     case MOVING:
       if(cap.getStepsLeft()==0){
+        clearLcdLine(lcd,1);
+        printLcd(lcd, 0,1, "Pos:"+String(cap.targetPos),0); //col, row
+
         cap.currentPos=cap.targetPos;
         cap.clearPins();
         state=START;
@@ -286,6 +292,7 @@ void setupHttpAdmin() {
 void handleHttpApi() {
   String cmd=httpServer.arg("command");
   String steps=httpServer.arg("steps");
+  String line0=httpServer.arg("line0");
   String responseBody="api";
   
   if(cmd=="CAL") {
@@ -302,9 +309,13 @@ void handleHttpApi() {
     StepperRequest::setNewRelPos(-100);
   } else if (cmd=="GETCURRENTPOS") {
     responseBody=String(cap.getCurrentPos());
+  } else if (cmd =="SETDISPLAY"){
+    clearLcdLine(lcd,0);
+    printLcd(lcd, 0,0, line0,0); //col, row
+    responseBody=String(line0);
   }
 
-  delay(1);
+  //delay(1);
   httpServer.send(200, "text/html", responseBody); 
 }
 
@@ -479,10 +490,9 @@ void setupWifiSTA(const char* ssid, const char* password, const char* newMacStr)
   Serial.println(WiFi.subnetMask());
   Serial.print("Gateway:");
   Serial.println(WiFi.gatewayIP());
-  //WiFi.printDiag(Serial);
 
-  printLcd(lcd, 0,0, "AG5ZL MagLoop",1);
-  printLcd(lcd, 0,1, WiFi.localIP(),0);
+  printLcd(lcd, 0,0, WiFi.localIP(),1);
+  printLcd(lcd, 0,1, "AG5ZL MagLoop",0);
 
 }
 
@@ -561,6 +571,14 @@ String commandRotorAziMax(String cmd) {
 /*
  * Display
  */
+void clearLcdLine(LiquidCrystal_I2C& lcdDisplay,int line){
+  for(int n = 0; n < 16; n++) {  // 20 indicates symbols in line. For 2x16 LCD write - 16
+    lcdDisplay.setCursor(n,line);
+    lcdDisplay.print(" ");
+  }
+  lcdDisplay.setCursor(0,line);             // set cursor in the beginning of deleted line
+}
+ 
 void printLcd(LiquidCrystal_I2C& lcdDisplay,int column, int row, IPAddress text, int clear) {
   if(clear==1) lcdDisplay.clear();
   

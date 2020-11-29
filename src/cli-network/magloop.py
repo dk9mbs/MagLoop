@@ -53,6 +53,7 @@ class Gui:
 
     def set_qrg(self, event):
         freq=float(event.widget.get())
+        magloop.set_display(f"{freq}MHz",0)
         f=open('map.json')
         map=json.loads(f.read())
         f.close()
