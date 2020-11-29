@@ -46,7 +46,7 @@ class MagLoopLib:
             f_last=f
             step_last=step
 
-        self.move_absolute(step)
+        self.move_absolute(step, True)
         return step
 
     """
@@ -81,12 +81,22 @@ class MagLoopLib:
             position=self._current_position-100
         return self.move_absolute(position, wait)
 
+    def set_display(self, text, line=0):
+        url=f"{self._url}/api?command=SETDISPLAY&line0={text}"
+        r=requests.get(url)
+        if r.status_code!=200:
+            raise NameError(f"{r.status_code} {r.text}")
+
     def _wait_for_position(self, target_position):
         current_position=-1
+        if target_position<0:
+            target_position=0
+
         while current_position!=int(target_position):
             self.__read_current_position()
             current_position=int(self._current_position)
             print(".", end = '', flush=True)
+            print(f"{target_position}:{current_position}")
             time.sleep(1.0)
         print("")
 
@@ -111,11 +121,11 @@ if __name__=='__main__':
     import json
     f=open('map.json')
     map=json.loads(f.read())
-    #print(magloop.move_by_frequency(map,7.074))
-    #print(magloop.move_by_frequency(map,14.078))
+    #print(magloop.move_by_frequency(map,7.078))
     #print(magloop.move_by_frequency(map,14.074))
-    magloop.move_absolute(0, True)
-    magloop.move_absolute(8500, True)
-    magloop.move_absolute(0, True)
+    print(magloop.move_by_frequency(map,28.074))
+    #magloop.move_absolute(0, True)
+    #magloop.move_absolute(8500, True)
+    #magloop.move_absolute(0, True)
 
 
