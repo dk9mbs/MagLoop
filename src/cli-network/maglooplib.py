@@ -46,7 +46,7 @@ class MagLoopLib:
             f_last=f
             step_last=step
 
-        self.move_absolute(step)
+        self.move_absolute(step, True)
         return step
 
     """
@@ -111,11 +111,11 @@ if __name__=='__main__':
     import json
     f=open('map.json')
     map=json.loads(f.read())
-    #print(magloop.move_by_frequency(map,7.074))
-    #print(magloop.move_by_frequency(map,14.078))
+    #print(magloop.move_by_frequency(map,7.078))
     #print(magloop.move_by_frequency(map,14.074))
-    magloop.move_absolute(0, True)
-    magloop.move_absolute(8500, True)
-    magloop.move_absolute(0, True)
+    print(magloop.move_by_frequency(map,28.074))
+    #magloop.move_absolute(0, True)
+    #magloop.move_absolute(8500, True)
+    #magloop.move_absolute(0, True)
 
 
