@@ -15,13 +15,9 @@
 #include "config.h"
 
 #define SETUPPIN D1 //5 
+#define END_SWITCH_PIN D2
+
 #define CAP_MOTOR_RPM 20
-#define ROT_AZI_STEP 2
-#define ROT_AZI_DIR 3
-#define ROT_AZI_ENABLED D4
-#define ROT_AZI_LIMIT_SWITCH D2
-#define ROT_ELE_LIMIT_SWITCH D3
-#define ROT_STEPS_AFTER_LIMIT 1
 
 #define C_STEPPER_PIN1 D5
 #define C_STEPPER_PIN2 D6
@@ -38,10 +34,6 @@ HTTPClient http;
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 boolean runSetup=false;
-
-// AZIMUT ROTOR (horizontal)
-const int rot_azi_steps_rotate_360 = 200;
-int rot_aziCurrentPos=0;
 
 class StepperRequest {
   public:
@@ -140,15 +132,13 @@ void setup()
 {
   
   Serial.begin(115200);
+  pinMode(END_SWITCH_PIN, INPUT);
   /* Start the display */
   lcd.begin(DISPLAY_SDA, DISPLAY_SCL);
   lcd.setCursor(0, 0); // Spalte, Zeile
   printLcd(lcd, 0,1, "booting ...",1);
-  delay (1000);  
   
-  printLcd(lcd, 0,1, "init stepper ...",1);
   cap.init(stepper);
-  delay (1000);  
 
   setupIo();
   setupFileSystem();
@@ -167,14 +157,6 @@ void setup()
     setupHttpAdmin();
     setupWifiSTA(readConfigValue("ssid").c_str(), readConfigValue("password").c_str(), readConfigValue("mac").c_str());
 
-    //pinMode(ROT_AZI_STEP, OUTPUT);
-    //pinMode(ROT_AZI_DIR, OUTPUT);
-    //pinMode(ROT_AZI_ENABLED, OUTPUT);
-    //pinMode(ROT_AZI_LIMIT_SWITCH,INPUT_PULLUP);
-    //pinMode(ROT_ELE_LIMIT_SWITCH,INPUT_PULLUP);
-    //digitalWrite(ROT_AZI_STEP, HIGH);
-    //digitalWrite(ROT_AZI_DIR, LOW);
-    //digitalWrite(ROT_AZI_ENABLED, HIGH);
     Serial.println("Waiting for commands over http...");
     delay(1000);
   } 
@@ -190,8 +172,8 @@ void loop()
 }
 
 void capStepperStateMaschine(const CapStepper& stepper) {
-  enum {START, CHANGEREQUEST, MOVING, NEWRELCHANGEREQUEST};
-  static int state=START;
+  enum {START, CHANGEREQUEST, MOVING, NEWRELCHANGEREQUEST, INIT, INITMOVE};
+  static int state=INIT;
   
   int newPos=StepperRequest::getNewPos();
   int newRelPos=StepperRequest::getNewRelPos();
@@ -204,6 +186,25 @@ void capStepperStateMaschine(const CapStepper& stepper) {
   //if(newPos!=-1)   Serial.println(newPos);
 
   switch (state) {
+    case INIT:
+      Serial.println("movin stepper to initial position ...");
+      printLcd(lcd, 0,1, "move to zero pos",0);
+      state=INITMOVE;
+      break;
+    case INITMOVE:
+
+      if(digitalRead(END_SWITCH_PIN)==0 && cap.getStepsLeft()==0) {
+        cap.clearPins();
+        Serial.println("Zero position reached!");
+        clearLcdLine(lcd,1);
+        printLcd(lcd, 0,1, "waiting...",0);
+        state=START;
+      } else if (digitalRead(END_SWITCH_PIN)==1 && cap.getStepsLeft()==0) {
+        cap.move(-10, false);
+        StepperRequest::setNewPos(-1);
+      }
+
+      break;
     case START:
       if(newPos>=0){
           Serial.println("Statemaschine is running...");
@@ -501,6 +502,7 @@ void setupWifiSTA(const char* ssid, const char* password, const char* newMacStr)
  * 
  *
  */
+ /*
 void moveRotorStepperAzi(String dir, int steps , int readLimitSwitch) {
   if(dir=="R") {
     digitalWrite(ROT_AZI_DIR, LOW);
@@ -567,6 +569,8 @@ String commandRotorAziMax(String cmd) {
 
   return "OK";
 }
+
+*/
 
 /*
  * Display
