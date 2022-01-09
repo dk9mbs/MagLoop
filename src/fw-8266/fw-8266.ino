@@ -64,7 +64,7 @@ class CapStepper{
     int currentPos=0;
     int targetPos=0;
     int minPos=0;
-    int maxPos=8500;
+    int maxPos=8300;
     int calSteps=100;
     CapStepper();
     void init(CheapStepper& stepper);    
@@ -172,8 +172,11 @@ void loop()
 }
 
 void capStepperStateMaschine(const CapStepper& stepper) {
-  enum {START, CHANGEREQUEST, MOVING, NEWRELCHANGEREQUEST, INIT, INITMOVE};
+  enum {START, CHANGEREQUEST, MOVING, NEWRELCHANGEREQUEST, INIT, INITMOVE,INITMOVEBACK};
   static int state=INIT;
+  
+  static int goBackAfterInitSteps=0;
+  int initStepSize=1;
   
   int newPos=StepperRequest::getNewPos();
   int newRelPos=StepperRequest::getNewRelPos();
@@ -198,13 +201,29 @@ void capStepperStateMaschine(const CapStepper& stepper) {
         Serial.println("Zero position reached!");
         clearLcdLine(lcd,1);
         printLcd(lcd, 0,1, "waiting...",0);
-        state=START;
+        state=INITMOVEBACK;
       } else if (digitalRead(END_SWITCH_PIN)==1 && cap.getStepsLeft()==0) {
-        cap.move(-10, false);
+        cap.move(initStepSize*-1, CAP_MOTOR_RPM);
+        goBackAfterInitSteps++;
         StepperRequest::setNewPos(-1);
       }
 
       break;
+
+    case INITMOVEBACK:
+      if (cap.getStepsLeft()==0 && goBackAfterInitSteps!=0) {
+        cap.move(initStepSize, CAP_MOTOR_RPM);//MBR
+        StepperRequest::setNewPos(-1);
+        cap.currentPos=cap.currentPos+1;
+        goBackAfterInitSteps--;
+      } else if (cap.getStepsLeft()==0 && goBackAfterInitSteps==0) {
+        cap.clearPins();
+        if(cap.getCurrentPos()>cap.getMaxPos()) cap.currentPos=cap.getMaxPos(); 
+        Serial.println(cap.currentPos);
+        state=START;
+      }
+      break;
+      
     case START:
       if(newPos>=0){
           Serial.println("Statemaschine is running...");
